@@ -66,22 +66,35 @@ WEB_PASSWORD=rahasia .venv/bin/python -m app.main --replay tests/fixtures --host
 Data di `tests/fixtures/` adalah rekaman kejadian nyata yang sudah dianonimkan (serial, MAC, nama perangkat,
 nama pelanggan diganti; password dibuang).
 
-## Memasang di server GenieACS
+## Memasang di server production
+
+Panduan lengkap, langkah demi langkah, ada di **[docs/PRODUKSI.md](docs/PRODUKSI.md)**. Ada dua cara,
+pilih salah satu.
+
+**Dengan Docker**
+
+```bash
+git clone https://github.com/krisnapranata/ont-loop-detector.git /opt/ont-loop-detector
+cd /opt/ont-loop-detector
+cp .env.example .env && nano .env && chmod 600 .env     # isi minimal WEB_PASSWORD
+docker compose up -d --build
+```
+
+**Tanpa Docker** (venv + systemd)
 
 ```bash
 sudo useradd --system --home /opt/ont-loop-detector --shell /usr/sbin/nologin ontloop
 sudo git clone https://github.com/krisnapranata/ont-loop-detector.git /opt/ont-loop-detector
 cd /opt/ont-loop-detector
 sudo python3 -m venv .venv && sudo .venv/bin/pip install -r requirements.txt
-sudo cp .env.example .env && sudo nano .env        # isi alamat & kredensial
+sudo cp .env.example .env && sudo nano .env             # isi minimal WEB_PASSWORD
 sudo chown -R ontloop: /opt/ont-loop-detector && sudo chmod 600 .env
-sudo -u ontloop .venv/bin/python -m app.main --check   # uji koneksi ke ketiga sumber
 sudo cp deploy/ont-loop-detector.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now ont-loop-detector
 ```
 
-Dashboard ada di `http://<ip-server>:8088/`. Bila `WEB_PASSWORD` kosong, password sementara
-dibuat saat start dan ditulis di log (`journalctl -u ont-loop-detector`).
+Dashboard ada di `http://<ip-server>:8088/` (user `admin`). Bila `WEB_PASSWORD` kosong, password
+sementara dibuat saat start dan ditulis di log. Setelah itu isi alamat perangkat di halaman Pengaturan.
 
 ### Halaman Pengaturan
 
@@ -115,6 +128,9 @@ app/web.py        API + dashboard
 app/static/       dashboard (HTML/CSS/JS murni + uPlot, tanpa CDN; animasi mati otomatis bila
                   sistem diatur "kurangi gerakan")
 tests/            tes parser dan tes replay kejadian
+docs/PRODUKSI.md  panduan pemasangan di server (Docker dan tanpa Docker)
+Dockerfile, docker-compose.yml   pemasangan dengan Docker
+deploy/           unit systemd untuk pemasangan tanpa Docker
 ```
 
 ## Panduan FastAPI untuk proyek ini

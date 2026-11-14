@@ -1,0 +1,30 @@
+# Menjalankan ONT Loop Detector dengan Docker.
+#   docker compose up -d --build     memasang / memperbarui
+#   docker compose logs -f           melihat log
+# Panduan lengkap: docs/PRODUKSI.md
+
+services:
+  ont-loop-detector:
+    build: .
+    image: ont-loop-detector:latest
+    container_name: ont-loop-detector
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ontloop-data:/app/data
+
+    # Mode jaringan "host": container memakai jaringan server apa adanya.
+    # - GENIEACS_URL=http://127.0.0.1:7557 langsung jalan bila GenieACS ada di server yang sama.
+    # - Dashboard terbuka di port WEB_PORT (bawaan 8088) milik server.
+    network_mode: host
+
+    # Alternatif mode bridge: beri tanda # pada baris network_mode di atas, lalu aktifkan dua baris
+    # di bawah. Di mode ini 127.0.0.1 berarti container itu sendiri, jadi di halaman Pengaturan isi
+    # host GenieACS dengan IP server (misalnya 192.168.100.253), bukan 127.0.0.1.
+    # ports:
+    #   - "8088:8088"
+
+volumes:
+  ontloop-data:
