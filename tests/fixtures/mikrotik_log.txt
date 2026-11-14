@@ -1,0 +1,4 @@
+2026-11-14 10:17:03 interface,warning vlan200-HOTSPOT received loop protect packet originated from 14:02:EC:BD:79:AF (vlan30-ISP4)
+2026-11-14 10:19:40 interface,warning vlan200-HOTSPOT received loop protect packet originated from 14:02:EC:BD:79:AF (vlan30-ISP4)
+ 2026-11-14 10:24:53 interface,warning vlan200-HOTSPOT received loop protect packet originated from 14:02:EC:BD:79:AF (vlan30-ISP4)
+2026-11-14 10:29:58 interface,warning vlan200-HOTSPOT received loop protect packet originated from 14:02:EC:BD:79:AF (vlan30-ISP4)

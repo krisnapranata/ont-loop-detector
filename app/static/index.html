@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONT Loop Detector</title>
+<link rel="stylesheet" href="static/vendor/uplot.min.css">
+<link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 4a8 8 0 1 1-7.4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4 3.5V9h5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg>
+    <span>ONT Loop Detector</span>
+    <span class="replay" id="replayTag" hidden>Mode replay, data contoh</span>
+  </div>
+  <div class="tools">
+    <ul class="sources" id="sources" aria-label="Sumber data"></ul>
+    <button id="btnTheme" class="ghost" type="button" aria-label="Ganti tema terang/gelap">Tema</button>
+    <button id="btnRefresh" type="button">Cek ulang sekarang</button>
+  </div>
+</header>
+
+<main>
+  <section class="status" id="status" data-state="wait" aria-live="polite">
+    <div class="status-text">
+      <h1 id="statusTitle">Memuat data…</h1>
+      <p id="statusSub"></p>
+      <p class="action" id="statusAction" hidden></p>
+      <ul class="why" id="statusWhy"></ul>
+    </div>
+    <figure class="path" id="path" aria-label="Skema jalur loop"></figure>
+  </section>
+
+  <dl class="figures" id="figures"></dl>
+
+  <section class="block">
+    <div class="block-head">
+      <h2>Perkembangan</h2>
+      <div class="range" role="group" aria-label="Rentang waktu">
+        <button type="button" data-h="1">1 jam</button>
+        <button type="button" data-h="3" aria-pressed="true">3 jam</button>
+        <button type="button" data-h="6">6 jam</button>
+        <button type="button" data-h="24">24 jam</button>
+      </div>
+    </div>
+    <p class="hint">Area merah muda menandai waktu loop terjadi.</p>
+    <div class="charts" id="charts">
+      <div class="chart"><h3>MAC berpindah port per pemeriksaan</h3><div id="c1"></div></div>
+      <div class="chart"><h3>User hotspot aktif</h3><div id="c2"></div></div>
+      <div class="chart"><h3>ONT yang ditandai
+        <span class="legend"><i class="sw sw-kuat"></i>tersangka kuat <i class="sw sw-risk"></i>berisiko</span></h3><div id="c3"></div></div>
+    </div>
+    <details class="tableview"><summary>Lihat angka chart sebagai tabel</summary><div id="seriesTable"></div></details>
+  </section>
+
+  <div class="cols">
+    <section class="block">
+      <div class="block-head"><h2>ONT yang perlu diperiksa</h2><span class="hint" id="coverage"></span></div>
+      <div id="suspects" class="suspects"></div>
+    </section>
+    <aside>
+      <section class="block">
+        <div class="block-head"><h2>MAC yang berpindah-pindah</h2></div>
+        <div id="flapping"></div>
+      </section>
+      <section class="block">
+        <div class="block-head"><h2>Riwayat kejadian</h2></div>
+        <div id="incidents"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+<footer><span id="foot"></span></footer>
+<div id="tip" class="tip" hidden></div>
+<script src="static/vendor/uplot.min.js"></script>
+<script src="static/app.js"></script>
+</body>
+</html>

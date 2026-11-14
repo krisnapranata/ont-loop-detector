@@ -1,0 +1,641 @@
+Flags: X - DISABLED, I - INVALID, H - DHCP, D - DYNAMIC, P - PUBLISHED, C - COMPLETE
+  0 DC address=172.16.0.157 mac-address=90:55:DE:E7:2C:DD interface=vlan100-MNG-TR069
+       published=no status=reachable
+  1 DC address=172.16.0.32 mac-address=CC:B0:71:09:D0:6A interface=vlan100-MNG-TR069
+       published=no status=stale
+  2 DC address=172.16.0.117 mac-address=98:8A:E6:B8:FE:BA interface=vlan100-MNG-TR069
+       published=no status=stale
+  3 DC address=172.16.0.23 mac-address=1C:60:D2:93:5E:B3 interface=vlan100-MNG-TR069
+       published=no status=stale
+  4 DC address=172.16.0.159 mac-address=CE:F1:D3:B2:AA:5A interface=vlan100-MNG-TR069
+       published=no status=stale
+  5 DC address=172.16.0.5 mac-address=6F:0C:60:21:BE:D5 interface=vlan100-MNG-TR069
+       published=no status=reachable
+  6 DC address=172.16.255.244 mac-address=61:E0:3D:CC:91:07 interface=vlan100-MNG-TR069
+       published=no status=stale
+  7 DC address=172.16.0.110 mac-address=1C:60:D2:55:76:88 interface=vlan100-MNG-TR069
+       published=no status=stale
+  8 DC address=172.16.0.113 mac-address=BE:90:B9:05:E3:18 interface=vlan100-MNG-TR069
+       published=no status=stale
+  9 DC address=172.16.0.97 mac-address=1C:80:AA:08:7C:DF interface=vlan100-MNG-TR069
+       published=no status=stale
+ 10 DC address=172.16.0.51 mac-address=6D:0A:3B:CE:5F:D8 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 11 DC address=172.16.0.115 mac-address=00:B3:75:D9:76:D7 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 12 DC address=172.16.0.129 mac-address=6C:54:E4:99:2D:EB interface=vlan100-MNG-TR069
+       published=no status=stale
+ 13 DC address=172.16.0.102 mac-address=C1:CE:CD:D0:B9:38 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 14 DC address=172.16.0.26 mac-address=F9:EE:A8:0D:FE:3A interface=vlan100-MNG-TR069
+       published=no status=stale
+ 15 DC address=172.16.0.152 mac-address=CC:B0:71:C1:F9:BB interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 16 DC address=172.16.0.119 mac-address=2D:22:2B:13:25:B6 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 17 DC address=172.16.0.35 mac-address=10:07:1D:7E:B8:FF interface=vlan100-MNG-TR069
+       published=no status=stale
+ 18 DC address=172.16.0.106 mac-address=CB:64:AE:95:B8:FE interface=vlan100-MNG-TR069
+       published=no status=stale
+ 19 DC address=172.16.0.141 mac-address=1C:6F:2F:ED:C7:C9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 20 DC address=172.16.0.122 mac-address=A2:77:FC:74:39:EE interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 21 DC address=172.16.0.68 mac-address=BD:3A:0F:F9:1A:F9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 22 DC address=172.16.0.29 mac-address=65:AA:9B:59:B1:55 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 23 DC address=172.16.0.144 mac-address=40:D2:3F:F8:36:48 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 24 DC address=172.16.15.252 mac-address=1C:60:D2:8D:34:04 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 25 DC address=172.16.0.161 mac-address=66:5A:32:7C:1E:65 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 26 DC address=NULL mac-address=6C:0E:5B:B6:7B:94 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 27 DC address=172.16.0.53 mac-address=EB:51:D4:62:95:23 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 28 DC address=172.16.0.79 mac-address=9A:3F:FF:20:50:29 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 29 DC address=172.16.0.80 mac-address=CB:CB:3E:27:86:E4 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 30 DC address=172.16.0.93 mac-address=28:82:33:6F:81:10 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 31 DC address=172.16.0.98 mac-address=53:0A:DF:38:4E:B4 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 32 DC address=172.16.0.116 mac-address=96:70:1E:A9:91:FA interface=vlan100-MNG-TR069
+       published=no status=stale
+ 33 DC address=172.16.0.134 mac-address=DD:DA:D8:A2:DB:6E interface=vlan100-MNG-TR069
+       published=no status=stale
+ 34 DC address=172.16.0.107 mac-address=03:56:71:FE:B4:31 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 35 DC address=NULL mac-address=E2:BE:16:6E:6E:67 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 36 DC address=172.16.0.91 mac-address=1C:60:D2:FD:E6:B4 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 37 DC address=172.16.0.17 mac-address=A6:9F:C1:A7:86:50 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 38 DC address=172.16.0.12 mac-address=AC:0B:B5:2C:CE:C9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 39 DC address=172.16.0.133 mac-address=1C:60:D2:31:C4:B1 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 40 DC address=172.16.0.92 mac-address=CC:B0:71:CF:08:C5 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 41 DC address=172.16.0.20 mac-address=F4:58:83:0B:E9:83 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 42 DC address=172.16.0.8 mac-address=45:FA:86:32:1C:A6 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 43 DC address=172.16.0.112 mac-address=13:3E:6B:81:FF:97 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 44 DC address=172.16.0.99 mac-address=57:89:3A:E0:65:F4 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 45 DC address=172.16.0.18 mac-address=E5:41:4B:4D:94:F8 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 46 DC address=172.16.0.65 mac-address=A0:7B:90:D2:B5:12 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 47 DC address=172.16.0.44 mac-address=A0:7A:68:06:DF:B7 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 48 DC address=172.16.0.184 mac-address=1B:7B:A2:DA:C4:99 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 49 DC address=172.16.0.197 mac-address=F5:F3:0D:2A:A4:B7 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 50 DC address=172.16.0.127 mac-address=EC:E6:A2:A6:2F:F6 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 51 DC address=172.16.0.143 mac-address=1C:60:D2:7E:DC:6B interface=vlan100-MNG-TR069
+       published=no status=stale
+ 52 DC address=172.16.0.16 mac-address=D4:52:35:B9:A4:C5 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 53 DC address=172.16.255.106 mac-address=BC:17:F2:65:0B:BC interface=vlan100-MNG-TR069
+       published=no status=stale
+ 54 DC address=172.16.0.149 mac-address=90:55:DE:5C:FF:8B interface=vlan100-MNG-TR069
+       published=no status=stale
+ 55 DC address=172.16.15.249 mac-address=10:10:81:47:E3:FE interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 56 DC address=172.16.0.63 mac-address=00:67:62:4A:09:41 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 57 DC address=172.16.0.188 mac-address=0A:89:F7:4D:83:57 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 58 DC address=172.16.0.155 mac-address=FC:A6:CD:13:29:0E interface=vlan100-MNG-TR069
+       published=no status=stale
+ 59 DC address=172.16.0.78 mac-address=8D:2A:C7:76:85:3C interface=vlan100-MNG-TR069
+       published=no status=stale
+ 60 DC address=172.16.0.154 mac-address=2C:63:EA:98:42:BC interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 61 DC address=172.16.0.52 mac-address=3D:B8:82:94:CB:9C interface=vlan100-MNG-TR069
+       published=no status=stale
+ 62 DC address=172.16.0.153 mac-address=5D:8E:6D:DB:8E:FA interface=vlan100-MNG-TR069
+       published=no status=stale
+ 63 DC address=NULL mac-address=B4:46:41:07:9A:0C interface=vlan100-MNG-TR069
+       published=no status=stale
+ 64 DC address=172.16.0.75 mac-address=94:98:69:A8:B0:FB interface=vlan100-MNG-TR069
+       published=no status=stale
+ 65 DC address=172.16.0.40 mac-address=D0:59:19:E3:D1:A3 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 66 DC address=172.16.0.160 mac-address=8F:1D:D3:69:BC:AF interface=vlan100-MNG-TR069
+       published=no status=stale
+ 67 DC address=172.16.0.166 mac-address=BC:23:74:40:43:8A interface=vlan100-MNG-TR069
+       published=no status=stale
+ 68 DC address=172.16.0.96 mac-address=E0:37:43:8A:86:4A interface=vlan100-MNG-TR069
+       published=no status=stale
+ 69 DC address=172.16.0.156 mac-address=1E:A2:43:47:38:EF interface=vlan100-MNG-TR069
+       published=no status=stale
+ 70 DC address=172.16.0.74 mac-address=8B:90:00:1E:6A:80 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 71 DC address=172.16.0.82 mac-address=17:27:E0:A7:07:E9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 72 DC address=172.16.0.140 mac-address=2D:06:A3:92:88:7C interface=vlan100-MNG-TR069
+       published=no status=stale
+ 73 DC address=172.16.0.6 mac-address=D0:4E:CB:79:ED:52 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 74 DC address=172.16.0.28 mac-address=90:55:DE:1E:F0:16 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 75 DC address=172.16.0.126 mac-address=00:67:62:24:05:D7 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 76 DC address=172.16.0.60 mac-address=10:C8:F1:19:41:95 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 77 DC address=172.16.0.145 mac-address=90:31:CC:40:5B:2F interface=vlan100-MNG-TR069
+       published=no status=stale
+ 78 DC address=172.16.0.132 mac-address=09:05:08:69:FF:F3 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 79 DC address=172.16.0.62 mac-address=54:46:17:A5:20:80 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 80 DC address=172.16.0.118 mac-address=04:FE:8D:EF:A5:42 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 81 DC address=172.16.0.84 mac-address=8D:3D:09:0A:CB:E7 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 82 DC address=172.16.0.85 mac-address=DB:F5:AD:04:E2:91 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 83 DC address=172.16.0.111 mac-address=BC:53:07:FE:60:BB interface=vlan100-MNG-TR069
+       published=no status=stale
+ 84 DC address=172.16.15.254 mac-address=89:56:57:DA:8E:C9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 85 DC address=172.16.0.123 mac-address=58:D3:B7:DC:39:23 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 86 DC address=172.16.0.128 mac-address=E1:5E:B8:61:39:D1 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 87 DC address=172.16.0.146 mac-address=99:9B:1D:89:CA:0F interface=vlan100-MNG-TR069
+       published=no status=stale
+ 88 DC address=172.16.0.13 mac-address=0C:37:47:7A:26:F2 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 89 DC address=172.16.0.27 mac-address=B0:B1:94:21:0C:FC interface=vlan100-MNG-TR069
+       published=no status=stale
+ 90 DC address=172.16.0.137 mac-address=E0:A1:CE:0F:F2:B4 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 91 DC address=172.16.0.31 mac-address=9C:E9:1C:47:99:AC interface=vlan100-MNG-TR069
+       published=no status=stale
+ 92 DC address=172.16.0.131 mac-address=E4:CA:12:EC:A8:51 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 93 DC address=172.16.15.247 mac-address=B8:DD:71:EB:4A:14 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 94 DC address=172.16.0.34 mac-address=EC:F0:FE:D3:D0:5A interface=vlan100-MNG-TR069
+       published=no status=stale
+ 95 DC address=172.16.0.58 mac-address=30:1F:48:FD:79:B3 interface=vlan100-MNG-TR069
+       published=no status=reachable
+ 96 DC address=172.16.15.243 mac-address=30:1F:48:83:74:D9 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 97 DC address=172.16.0.169 mac-address=12:D3:4D:AA:FA:84 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 98 DC address=172.16.0.7 mac-address=5D:BE:59:46:F1:34 interface=vlan100-MNG-TR069
+       published=no status=stale
+ 99 DC address=172.16.0.54 mac-address=94:98:69:27:15:55 interface=vlan100-MNG-TR069
+       published=no status=stale
+100 DC address=172.16.15.245 mac-address=D2:6D:AE:AC:21:FE interface=vlan100-MNG-TR069
+       published=no status=reachable
+101 DC address=172.16.0.176 mac-address=DD:B1:17:53:10:D1 interface=vlan100-MNG-TR069
+       published=no status=stale
+102 DC address=172.16.0.21 mac-address=AC:A9:8E:C2:12:56 interface=vlan100-MNG-TR069
+       published=no status=stale
+103 DC address=172.16.0.61 mac-address=B0:B1:94:D7:A3:28 interface=vlan100-MNG-TR069
+       published=no status=stale
+104 DC address=172.16.0.55 mac-address=F4:B5:AA:65:E5:D6 interface=vlan100-MNG-TR069
+       published=no status=stale
+105 DC address=172.16.0.38 mac-address=1C:60:D2:C8:58:1B interface=vlan100-MNG-TR069
+       published=no status=reachable
+106 DC address=172.16.0.57 mac-address=E4:47:B3:8E:2A:50 interface=vlan100-MNG-TR069
+       published=no status=stale
+107 DC address=172.16.0.30 mac-address=87:48:48:55:C2:C4 interface=vlan100-MNG-TR069
+       published=no status=stale
+108 DC address=172.16.0.164 mac-address=E1:7B:16:E5:7F:48 interface=vlan100-MNG-TR069
+       published=no status=stale
+109 DC address=172.16.0.10 mac-address=EF:B7:21:87:3D:BF interface=vlan100-MNG-TR069
+       published=no status=stale
+110 DC address=172.16.0.124 mac-address=66:A2:5A:53:71:51 interface=vlan100-MNG-TR069
+       published=no status=reachable
+111 DC address=172.16.0.181 mac-address=9C:50:82:F0:75:80 interface=vlan100-MNG-TR069
+       published=no status=stale
+112 DC address=172.16.0.165 mac-address=DD:BA:20:10:E0:21 interface=vlan100-MNG-TR069
+       published=no status=stale
+113 DC address=172.16.0.91 mac-address=1C:60:D2:7C:0F:73 interface=vlan100-MNG-TR069
+       published=no status=stale
+114 DC address=172.16.0.198 mac-address=B8:DD:71:70:B7:7C interface=vlan100-MNG-TR069
+       published=no status=stale
+115 DC address=172.16.0.142 mac-address=3D:A7:0D:30:F5:70 interface=vlan100-MNG-TR069
+       published=no status=reachable
+116 DC address=172.16.0.194 mac-address=58:BE:B5:15:59:BF interface=vlan100-MNG-TR069
+       published=no status=stale
+117 DC address=172.16.0.41 mac-address=22:AD:36:E0:E1:B2 interface=vlan100-MNG-TR069
+       published=no status=stale
+118 DC address=172.16.0.171 mac-address=EF:8D:2B:39:AB:00 interface=vlan100-MNG-TR069
+       published=no status=stale
+119 DC address=172.16.0.170 mac-address=40:47:75:FD:73:8C interface=vlan100-MNG-TR069
+       published=no status=stale
+120 DC address=172.16.0.138 mac-address=10:4A:16:95:79:C0 interface=vlan100-MNG-TR069
+       published=no status=reachable
+121 DC address=172.16.0.88 mac-address=67:10:AC:7E:97:14 interface=vlan100-MNG-TR069
+       published=no status=stale
+122 DC address=172.16.0.4 mac-address=6E:B5:5C:E1:ED:47 interface=vlan100-MNG-TR069
+       published=no status=stale
+123 DC address=172.16.0.43 mac-address=F4:2D:06:09:24:8F interface=vlan100-MNG-TR069
+       published=no status=stale
+124 DC address=172.16.0.130 mac-address=CC:B0:71:39:3D:53 interface=vlan100-MNG-TR069
+       published=no status=stale
+125 DC address=172.16.0.87 mac-address=88:65:9F:36:D9:C1 interface=vlan100-MNG-TR069
+       published=no status=reachable
+126 DC address=172.16.0.103 mac-address=BC:46:32:14:88:AE interface=vlan100-MNG-TR069
+       published=no status=stale
+127 DC address=172.16.0.72 mac-address=88:65:9F:95:70:5E interface=vlan100-MNG-TR069
+       published=no status=stale
+128 DC address=172.16.0.183 mac-address=1C:60:D2:63:09:59 interface=vlan100-MNG-TR069
+       published=no status=stale
+129 DC address=172.16.0.177 mac-address=82:02:C9:2A:2F:A1 interface=vlan100-MNG-TR069
+       published=no status=stale
+130 DC address=172.16.0.178 mac-address=8B:C0:0B:89:9A:29 interface=vlan100-MNG-TR069
+       published=no status=reachable
+131 DC address=172.16.0.29 mac-address=88:65:9F:88:18:9E interface=vlan100-MNG-TR069
+       published=no status=stale
+132 DC address=172.16.0.163 mac-address=88:65:9F:D0:2F:82 interface=vlan100-MNG-TR069
+       published=no status=stale
+133 DC address=172.16.0.67 mac-address=BC:46:32:32:89:63 interface=vlan100-MNG-TR069
+       published=no status=stale
+134 DC address=172.16.0.36 mac-address=88:65:9F:F8:B5:6D interface=vlan100-MNG-TR069
+       published=no status=stale
+135 DC address=172.16.0.193 mac-address=1C:60:D2:34:8A:54 interface=vlan100-MNG-TR069
+       published=no status=reachable
+136 DC address=172.16.0.24 mac-address=BC:46:32:BA:7A:9C interface=vlan100-MNG-TR069
+       published=no status=stale
+137 DC address=172.16.0.168 mac-address=05:EA:3D:9B:C2:AD interface=vlan100-MNG-TR069
+       published=no status=stale
+138 DC address=172.16.0.90 mac-address=88:65:9F:ED:44:CA interface=vlan100-MNG-TR069
+       published=no status=stale
+139 DC address=172.16.0.196 mac-address=88:65:9F:D7:8A:9F interface=vlan100-MNG-TR069
+       published=no status=stale
+140 DC address=172.16.0.48 mac-address=28:6D:DA:86:69:F7 interface=vlan100-MNG-TR069
+       published=no status=reachable
+141 DC address=172.16.0.46 mac-address=1C:60:D2:42:5C:D0 interface=vlan100-MNG-TR069
+       published=no status=stale
+142 DC address=172.16.0.151 mac-address=A3:2E:CE:D1:22:4B interface=vlan100-MNG-TR069
+       published=no status=stale
+143 DC address=172.16.0.70 mac-address=88:65:9F:6F:F1:A7 interface=vlan100-MNG-TR069
+       published=no status=stale
+144 DC address=172.16.0.101 mac-address=1C:60:D2:A4:31:60 interface=vlan100-MNG-TR069
+       published=no status=stale
+145 DC address=172.16.0.3 mac-address=88:65:9F:68:36:85 interface=vlan100-MNG-TR069
+       published=no status=reachable
+146 DC address=172.16.16.4 mac-address=B7:C8:CB:8E:CD:A4 interface=vlan100-MNG-TR069
+       published=no status=stale
+147 DC address=172.16.16.6 mac-address=C2:EE:19:90:E5:65 interface=vlan100-MNG-TR069
+       published=no status=stale
+148 DC address=172.16.16.2 mac-address=0E:D9:0A:12:F3:8B interface=vlan100-MNG-TR069
+       published=no status=stale
+149 DC address=172.16.16.5 mac-address=60:0F:7D:DD:27:D7 interface=vlan100-MNG-TR069
+       published=no status=stale
+150 DC address=172.16.16.8 mac-address=1C:FC:65:AC:93:AA interface=vlan100-MNG-TR069
+       published=no status=reachable
+151 DC address=172.16.16.7 mac-address=23:61:1C:23:C7:21 interface=vlan100-MNG-TR069
+       published=no status=stale
+152 DC address=172.16.16.36 mac-address=D5:A7:DB:7E:21:9D interface=vlan100-MNG-TR069
+       published=no status=stale
+153 DC address=172.16.16.19 mac-address=20:7C:91:A9:64:34 interface=vlan100-MNG-TR069
+       published=no status=stale
+154 DC address=172.16.16.14 mac-address=B2:A8:D3:5E:27:F1 interface=vlan100-MNG-TR069
+       published=no status=stale
+155 DC address=172.16.0.49 mac-address=3F:7D:18:2F:FA:9C interface=vlan100-MNG-TR069
+       published=no status=reachable
+156 DC address=172.16.0.25 mac-address=3A:34:DC:60:2E:4B interface=vlan100-MNG-TR069
+       published=no status=stale
+157 DC address=172.16.0.89 mac-address=7C:C8:59:B3:92:94 interface=vlan100-MNG-TR069
+       published=no status=stale
+158 DC address=172.16.0.83 mac-address=85:13:10:FB:25:9B interface=vlan100-MNG-TR069
+       published=no status=stale
+159 DC address=172.16.16.46 mac-address=00:27:65:81:F4:EF interface=vlan100-MNG-TR069
+       published=no status=stale
+160 DC address=172.16.0.81 mac-address=41:AF:42:E4:E8:EE interface=vlan100-MNG-TR069
+       published=no status=reachable
+161 DC address=172.16.16.35 mac-address=86:4E:A9:E0:2F:81 interface=vlan100-MNG-TR069
+       published=no status=stale
+162 DC address=172.16.16.20 mac-address=AB:72:CF:5E:E2:62 interface=vlan100-MNG-TR069
+       published=no status=stale
+163 DC address=172.16.16.23 mac-address=99:79:5C:8F:86:11 interface=vlan100-MNG-TR069
+       published=no status=stale
+164 DC address=172.16.16.32 mac-address=72:93:1D:83:7A:49 interface=vlan100-MNG-TR069
+       published=no status=stale
+165 DC address=172.16.16.3 mac-address=82:9F:7E:8E:14:57 interface=vlan100-MNG-TR069
+       published=no status=reachable
+166 DC address=172.16.16.45 mac-address=A7:C5:0A:0B:64:DB interface=vlan100-MNG-TR069
+       published=no status=stale
+167 DC address=172.16.16.24 mac-address=BA:13:36:BD:BF:FC interface=vlan100-MNG-TR069
+       published=no status=stale
+168 DC address=172.16.16.27 mac-address=01:2C:C0:6A:A3:6B interface=vlan100-MNG-TR069
+       published=no status=stale
+169 DC address=172.16.0.114 mac-address=9F:DB:C6:DB:C4:CC interface=vlan100-MNG-TR069
+       published=no status=stale
+170 DC address=172.16.16.12 mac-address=01:57:E5:FE:A4:49 interface=vlan100-MNG-TR069
+       published=no status=reachable
+171 DC address=172.16.16.33 mac-address=8D:36:2E:EB:B0:F4 interface=vlan100-MNG-TR069
+       published=no status=stale
+172 DC address=172.16.16.63 mac-address=61:0F:5B:61:93:75 interface=vlan100-MNG-TR069
+       published=no status=stale
+173 DC address=172.16.16.17 mac-address=E2:BA:6B:B5:D9:CB interface=vlan100-MNG-TR069
+       published=no status=stale
+174 DC address=172.16.0.148 mac-address=6F:00:83:CF:31:FD interface=vlan100-MNG-TR069
+       published=no status=stale
+175 DC address=172.16.16.54 mac-address=E2:2E:6D:AB:33:EF interface=vlan100-MNG-TR069
+       published=no status=reachable
+176 DC address=172.16.0.121 mac-address=A3:F9:27:8E:75:03 interface=vlan100-MNG-TR069
+       published=no status=stale
+177 DC address=172.16.0.69 mac-address=88:65:9F:00:A6:F1 interface=vlan100-MNG-TR069
+       published=no status=stale
+178 DC address=172.16.16.9 mac-address=59:79:14:01:00:55 interface=vlan100-MNG-TR069
+       published=no status=stale
+179 DC address=172.16.16.13 mac-address=2C:56:C8:E9:2A:83 interface=vlan100-MNG-TR069
+       published=no status=stale
+180 DC address=172.16.16.28 mac-address=B2:66:15:34:F6:18 interface=vlan100-MNG-TR069
+       published=no status=reachable
+181 DC address=172.16.16.25 mac-address=A3:BD:9C:31:36:D1 interface=vlan100-MNG-TR069
+       published=no status=stale
+182 DC address=172.16.16.65 mac-address=41:89:1C:FD:25:E2 interface=vlan100-MNG-TR069
+       published=no status=stale
+183 DC address=172.16.0.94 mac-address=8E:C4:33:81:7D:00 interface=vlan100-MNG-TR069
+       published=no status=stale
+184 DC address=172.16.16.47 mac-address=40:CB:83:27:4A:47 interface=vlan100-MNG-TR069
+       published=no status=stale
+185 DC address=172.16.47.162 mac-address=1E:C4:18:FE:36:2B interface=vlan100-MNG-TR069
+       published=no status=reachable
+186 DC address=172.16.16.31 mac-address=FA:0A:52:7D:FD:34 interface=vlan100-MNG-TR069
+       published=no status=stale
+187 DC address=172.16.47.157 mac-address=D9:51:B6:2B:C8:AA interface=vlan100-MNG-TR069
+       published=no status=stale
+188 DC address=172.16.47.235 mac-address=01:4D:67:AE:DB:A5 interface=vlan100-MNG-TR069
+       published=no status=stale
+189 DC address=172.16.47.156 mac-address=C4:7C:79:DD:31:DF interface=vlan100-MNG-TR069
+       published=no status=stale
+190 DC address=172.16.47.245 mac-address=6C:21:6B:7E:93:09 interface=vlan100-MNG-TR069
+       published=no status=reachable
+191 DC address=172.16.47.153 mac-address=1B:AF:EC:70:B7:59 interface=vlan100-MNG-TR069
+       published=no status=stale
+192 DC address=172.16.47.230 mac-address=56:A4:46:E3:82:13 interface=vlan100-MNG-TR069
+       published=no status=stale
+193 DC address=172.16.47.168 mac-address=CD:AD:73:D3:7C:1E interface=vlan100-MNG-TR069
+       published=no status=stale
+194 DC address=172.16.47.173 mac-address=B6:EF:22:A6:23:A1 interface=vlan100-MNG-TR069
+       published=no status=stale
+195 DC address=172.16.47.167 mac-address=CA:27:81:49:C8:2B interface=vlan100-MNG-TR069
+       published=no status=reachable
+196 DC address=172.16.47.174 mac-address=4D:57:32:C9:E8:EE interface=vlan100-MNG-TR069
+       published=no status=stale
+197 DC address=172.16.47.236 mac-address=DF:48:D5:03:85:B3 interface=vlan100-MNG-TR069
+       published=no status=stale
+198 DC address=172.16.47.251 mac-address=0E:09:7B:55:6C:49 interface=vlan100-MNG-TR069
+       published=no status=stale
+199 DC address=172.16.47.248 mac-address=8A:69:F9:77:88:F3 interface=vlan100-MNG-TR069
+       published=no status=stale
+200 DC address=172.16.47.253 mac-address=F0:3E:0B:DD:C9:78 interface=vlan100-MNG-TR069
+       published=no status=reachable
+201 DC address=172.16.47.238 mac-address=9E:EE:97:65:B7:E3 interface=vlan100-MNG-TR069
+       published=no status=stale
+202 DC address=172.16.47.246 mac-address=EF:8B:01:F4:C9:DC interface=vlan100-MNG-TR069
+       published=no status=stale
+203 DC address=172.16.47.247 mac-address=7C:24:FD:5F:C4:07 interface=vlan100-MNG-TR069
+       published=no status=stale
+204 DC address=172.16.16.51 mac-address=47:CA:DE:53:92:BD interface=vlan100-MNG-TR069
+       published=no status=stale
+205 DC address=172.16.16.34 mac-address=67:91:49:E8:C6:C7 interface=vlan100-MNG-TR069
+       published=no status=reachable
+206 DC address=172.16.16.40 mac-address=D6:26:60:2D:69:83 interface=vlan100-MNG-TR069
+       published=no status=stale
+207 DC address=172.16.16.38 mac-address=EC:E6:A2:52:B1:80 interface=vlan100-MNG-TR069
+       published=no status=stale
+208 DC address=172.16.16.29 mac-address=48:6D:CF:1D:11:45 interface=vlan100-MNG-TR069
+       published=no status=stale
+209 DC address=172.16.16.48 mac-address=18:6A:DC:C9:20:41 interface=vlan100-MNG-TR069
+       published=no status=stale
+210 DC address=172.16.16.22 mac-address=A7:FE:F7:D5:1B:4A interface=vlan100-MNG-TR069
+       published=no status=reachable
+211 DC address=172.16.16.37 mac-address=BF:F5:B3:73:62:50 interface=vlan100-MNG-TR069
+       published=no status=stale
+212 DC address=172.16.16.31 mac-address=CF:6B:B3:65:F8:0F interface=vlan100-MNG-TR069
+       published=no status=stale
+213 DC address=172.16.16.42 mac-address=70:81:F4:8A:D7:67 interface=vlan100-MNG-TR069
+       published=no status=stale
+214 DC address=172.16.16.44 mac-address=0A:1C:F2:D8:64:30 interface=vlan100-MNG-TR069
+       published=no status=stale
+215 DC address=172.16.16.39 mac-address=10:50:85:48:E2:B6 interface=vlan100-MNG-TR069
+       published=no status=reachable
+216 DC address=172.16.0.182 mac-address=00:A7:BD:39:A8:DC interface=vlan100-MNG-TR069
+       published=no status=stale
+217 DC address=172.16.16.53 mac-address=04:BF:6B:46:A3:D9 interface=vlan100-MNG-TR069
+       published=no status=stale
+218 DC address=172.16.47.159 mac-address=AD:52:04:AA:0C:8F interface=vlan100-MNG-TR069
+       published=no status=stale
+219 DC address=172.16.16.46 mac-address=DE:B5:B0:F6:23:DD interface=vlan100-MNG-TR069
+       published=no status=stale
+220 DC address=172.16.0.50 mac-address=8A:73:28:AB:2F:9C interface=vlan100-MNG-TR069
+       published=no status=reachable
+221 DC address=172.16.0.86 mac-address=B8:4B:43:E6:1D:3C interface=vlan100-MNG-TR069
+       published=no status=stale
+222 DC address=172.16.0.76 mac-address=BC:46:32:C1:95:3B interface=vlan100-MNG-TR069
+       published=no status=stale
+223 DC address=172.16.0.147 mac-address=73:3D:2B:48:CC:DD interface=vlan100-MNG-TR069
+       published=no status=stale
+224 DC address=172.16.0.9 mac-address=22:34:C8:3A:2E:55 interface=vlan100-MNG-TR069
+       published=no status=stale
+225 DC address=172.16.0.124 mac-address=BD:4B:27:A7:0F:2E interface=vlan100-MNG-TR069
+       published=no status=reachable
+226 DC address=172.16.0.162 mac-address=E2:93:AC:21:17:FB interface=vlan100-MNG-TR069
+       published=no status=stale
+227 DC address=172.16.0.47 mac-address=88:65:9F:EA:50:77 interface=vlan100-MNG-TR069
+       published=no status=stale
+228 DC address=172.16.15.244 mac-address=E9:59:3E:CF:3F:CA interface=vlan100-MNG-TR069
+       published=no status=stale
+229 DC address=172.16.0.125 mac-address=70:10:3D:E9:E0:FC interface=vlan100-MNG-TR069
+       published=no status=stale
+230 DC address=172.16.16.21 mac-address=B7:E1:C2:8E:71:65 interface=vlan100-MNG-TR069
+       published=no status=reachable
+231 DC address=172.16.16.15 mac-address=6E:59:C1:AA:98:6D interface=vlan100-MNG-TR069
+       published=no status=stale
+232 DC address=172.16.16.64 mac-address=9B:98:BB:4B:0F:F2 interface=vlan100-MNG-TR069
+       published=no status=stale
+233 DC address=172.16.16.41 mac-address=F5:AE:CD:EF:2D:B5 interface=vlan100-MNG-TR069
+       published=no status=stale
+234 DC address=172.16.16.49 mac-address=01:DB:88:DA:25:59 interface=vlan100-MNG-TR069
+       published=no status=stale
+235 DC address=172.16.16.18 mac-address=CE:A5:97:2B:B4:74 interface=vlan100-MNG-TR069
+       published=no status=reachable
+236 DC address=172.16.16.56 mac-address=C6:5E:B9:E7:52:A3 interface=vlan100-MNG-TR069
+       published=no status=stale
+237 DC address=172.16.16.11 mac-address=10:83:D5:F9:A4:64 interface=vlan100-MNG-TR069
+       published=no status=stale
+238 DC address=172.16.16.52 mac-address=BC:49:7C:CD:57:C5 interface=vlan100-MNG-TR069
+       published=no status=stale
+239 DC address=172.16.16.30 mac-address=6D:EC:57:DF:6C:22 interface=vlan100-MNG-TR069
+       published=no status=stale
+240 DC address=172.16.16.50 mac-address=23:4C:7A:93:AC:93 interface=vlan100-MNG-TR069
+       published=no status=reachable
+241 DC address=172.16.16.69 mac-address=E8:47:25:86:B8:6D interface=vlan100-MNG-TR069
+       published=no status=stale
+242 DC address=172.16.16.43 mac-address=47:B9:E9:27:6A:93 interface=vlan100-MNG-TR069
+       published=no status=stale
+243 DC address=172.16.16.57 mac-address=C2:E4:B1:C4:B6:66 interface=vlan100-MNG-TR069
+       published=no status=stale
+244 DC address=172.16.16.73 mac-address=AF:B3:47:60:F3:18 interface=vlan100-MNG-TR069
+       published=no status=stale
+245 DC address=172.16.16.59 mac-address=4C:DB:5E:53:E5:89 interface=vlan100-MNG-TR069
+       published=no status=reachable
+246 DC address=172.16.16.60 mac-address=4F:72:5F:D9:14:EE interface=vlan100-MNG-TR069
+       published=no status=stale
+247 DC address=172.16.16.61 mac-address=28:EE:A1:97:A5:5E interface=vlan100-MNG-TR069
+       published=no status=stale
+248 DC address=172.16.16.62 mac-address=39:DC:F8:94:D7:5F interface=vlan100-MNG-TR069
+       published=no status=stale
+249 DC address=172.16.0.77 mac-address=6A:57:BB:3A:1F:3B interface=vlan100-MNG-TR069
+       published=no status=stale
+250 DC address=172.16.0.136 mac-address=60:18:88:D4:C1:87 interface=vlan100-MNG-TR069
+       published=no status=reachable
+251 DC address=172.16.0.19 mac-address=8E:4F:11:82:DC:38 interface=vlan100-MNG-TR069
+       published=no status=stale
+252 DC address=172.16.0.190 mac-address=AF:AB:F4:9C:32:A9 interface=vlan100-MNG-TR069
+       published=no status=stale
+253 DC address=172.16.16.10 mac-address=ED:8C:04:71:34:C4 interface=vlan100-MNG-TR069
+       published=no status=stale
+254 DC address=172.16.16.66 mac-address=A7:2E:7E:53:8A:1C interface=vlan100-MNG-TR069
+       published=no status=stale
+255 DC address=172.16.47.165 mac-address=BC:38:E1:9B:A0:7B interface=vlan100-MNG-TR069
+       published=no status=reachable
+256 DC address=172.16.47.160 mac-address=90:E9:CA:6D:D7:22 interface=vlan100-MNG-TR069
+       published=no status=stale
+257 DC address=172.16.0.37 mac-address=DA:51:7F:1D:1C:2B interface=vlan100-MNG-TR069
+       published=no status=stale
+258 DC address=172.16.47.158 mac-address=E7:DF:A1:C3:C0:05 interface=vlan100-MNG-TR069
+       published=no status=stale
+259 DC address=172.16.47.169 mac-address=A7:8D:6A:D9:A3:F9 interface=vlan100-MNG-TR069
+       published=no status=stale
+260 DC address=172.16.47.170 mac-address=E5:67:58:80:FF:C8 interface=vlan100-MNG-TR069
+       published=no status=reachable
+261 DC address=172.16.47.166 mac-address=C1:91:41:D6:4C:BE interface=vlan100-MNG-TR069
+       published=no status=stale
+262 DC address=172.16.47.227 mac-address=8D:7E:F2:F4:C1:05 interface=vlan100-MNG-TR069
+       published=no status=stale
+263 DC address=172.16.0.64 mac-address=1C:9F:DA:FF:72:C0 interface=vlan100-MNG-TR069
+       published=no status=stale
+264 DC address=172.16.0.139 mac-address=6D:2A:40:D7:4D:D3 interface=vlan100-MNG-TR069
+       published=no status=stale
+265 DC address=172.16.0.174 mac-address=34:05:3F:A8:AB:44 interface=vlan100-MNG-TR069
+       published=no status=reachable
+266 DC address=172.16.47.226 mac-address=67:51:A7:32:14:38 interface=vlan100-MNG-TR069
+       published=no status=stale
+267 DC address=172.16.0.158 mac-address=20:E8:82:6D:C8:FE interface=vlan100-MNG-TR069
+       published=no status=stale
+268 DC address=172.16.47.192 mac-address=C9:A7:13:42:59:44 interface=vlan100-MNG-TR069
+       published=no status=stale
+269 DC address=172.16.47.161 mac-address=D8:D1:EC:0F:46:0F interface=vlan100-MNG-TR069
+       published=no status=stale
+270 DC address=172.16.47.239 mac-address=C5:74:F1:A9:68:77 interface=vlan100-MNG-TR069
+       published=no status=reachable
+271 DC address=172.16.47.152 mac-address=0A:99:B7:C7:0D:7B interface=vlan100-MNG-TR069
+       published=no status=stale
+272 DC address=172.16.47.241 mac-address=73:9E:F7:31:FF:F8 interface=vlan100-MNG-TR069
+       published=no status=stale
+273 DC address=172.16.47.240 mac-address=F4:37:AE:73:4D:C6 interface=vlan100-MNG-TR069
+       published=no status=stale
+274 DC address=172.16.47.219 mac-address=8E:6E:FA:42:C7:BA interface=vlan100-MNG-TR069
+       published=no status=stale
+275 DC address=172.16.47.176 mac-address=C7:DC:D4:F9:61:7B interface=vlan100-MNG-TR069
+       published=no status=reachable
+276 DC address=172.16.16.16 mac-address=78:3D:D8:F0:6F:5C interface=vlan100-MNG-TR069
+       published=no status=stale
+277 DC address=172.16.47.163 mac-address=CE:3A:B0:29:C0:81 interface=vlan100-MNG-TR069
+       published=no status=stale
+278 DC address=172.16.47.234 mac-address=13:F7:2D:BD:76:BE interface=vlan100-MNG-TR069
+       published=no status=stale
+279 DC address=172.16.47.164 mac-address=F5:21:1F:97:30:24 interface=vlan100-MNG-TR069
+       published=no status=stale
+280 DC address=172.16.47.175 mac-address=C9:41:C7:2D:E2:7A interface=vlan100-MNG-TR069
+       published=no status=reachable
+281 DC address=172.16.47.233 mac-address=A7:0C:12:3D:66:A1 interface=vlan100-MNG-TR069
+       published=no status=stale
+282 DC address=172.16.47.171 mac-address=FB:65:EB:69:8B:49 interface=vlan100-MNG-TR069
+       published=no status=stale
+283 DC address=172.16.47.172 mac-address=A7:B8:50:0D:72:0C interface=vlan100-MNG-TR069
+       published=no status=stale
+284 DC address=172.16.47.232 mac-address=A4:9A:F4:87:C9:74 interface=vlan100-MNG-TR069
+       published=no status=stale
+285 DC address=172.16.47.252 mac-address=79:7B:37:BE:24:00 interface=vlan100-MNG-TR069
+       published=no status=reachable
+286 DC address=172.16.47.155 mac-address=A9:9A:BE:0F:73:6D interface=vlan100-MNG-TR069
+       published=no status=stale
+287 DC address=172.16.47.203 mac-address=93:7A:FE:4C:57:72 interface=vlan100-MNG-TR069
+       published=no status=stale
+288 DC address=172.16.47.237 mac-address=E7:B3:23:6E:19:DC interface=vlan100-MNG-TR069
+       published=no status=stale
+289 DC address=172.16.47.201 mac-address=21:4B:A3:8B:4C:FE interface=vlan100-MNG-TR069
+       published=no status=stale
+290 DC address=172.16.47.249 mac-address=B4:07:A5:16:4B:B9 interface=vlan100-MNG-TR069
+       published=no status=reachable
+291 DC address=172.16.47.250 mac-address=06:60:8A:4E:6A:4C interface=vlan100-MNG-TR069
+       published=no status=stale
+292 DC address=172.16.47.242 mac-address=BC:33:65:A2:AC:A8 interface=vlan100-MNG-TR069
+       published=no status=stale
+293 DC address=172.16.16.74 mac-address=A3:19:6C:74:BC:E6 interface=vlan100-MNG-TR069
+       published=no status=stale
+294 DC address=172.16.47.254 mac-address=1A:4F:BD:02:B2:AA interface=vlan100-MNG-TR069
+       published=no status=stale
+295 DC address=172.16.16.26 mac-address=32:7B:98:9D:F3:81 interface=vlan100-MNG-TR069
+       published=no status=reachable
+296 DC address=172.16.16.67 mac-address=A6:A4:0B:72:1A:2C interface=vlan100-MNG-TR069
+       published=no status=stale
+297 DC address=172.16.47.193 mac-address=D7:25:6E:CF:C2:71 interface=vlan100-MNG-TR069
+       published=no status=stale
+298 DC address=172.16.47.244 mac-address=33:40:F1:EC:CF:67 interface=vlan100-MNG-TR069
+       published=no status=stale
+299 DC address=172.16.0.33 mac-address=B1:B4:93:CB:74:7A interface=vlan100-MNG-TR069
+       published=no status=stale
+300 DC address=172.16.0.169 mac-address=96:FD:1A:E4:D7:76 interface=vlan100-MNG-TR069
+       published=no status=reachable
+301 DC address=172.16.47.169 mac-address=38:3F:9A:BF:56:08 interface=vlan100-MNG-TR069
+       published=no status=stale
+302 DC address=172.16.16.55 mac-address=A8:A0:F3:C8:F2:45 interface=vlan100-MNG-TR069
+       published=no status=stale
+303 DC address=172.16.16.67 mac-address=2F:BD:CD:DC:CF:15 interface=vlan100-MNG-TR069
+       published=no status=stale
+304 DC address=172.16.16.70 mac-address=98:31:9F:B5:0F:0D interface=vlan100-MNG-TR069
+       published=no status=stale
+305 DC address=172.16.16.71 mac-address=1E:26:A1:AE:B2:A1 interface=vlan100-MNG-TR069
+       published=no status=reachable
+306 DC address=172.16.16.72 mac-address=10:3D:E6:6C:9C:A7 interface=vlan100-MNG-TR069
+       published=no status=stale
+307 DC address=172.16.0.162 mac-address=88:65:9F:21:AF:0D interface=vlan100-MNG-TR069
+       published=no status=stale
+308 DC address=172.16.0.198 mac-address=28:6D:DA:C5:49:C4 interface=vlan100-MNG-TR069
+       published=no status=stale
+309 DC address=172.16.47.154 mac-address=28:C9:0C:A8:E3:8F interface=vlan100-MNG-TR069
+       published=no status=stale
+310 DC address=172.16.16.75 mac-address=28:4A:AC:6D:5D:7F interface=vlan100-MNG-TR069
+       published=no status=reachable
+311 DC address=172.16.16.76 mac-address=64:00:C4:D7:C8:00 interface=vlan100-MNG-TR069
+       published=no status=stale
+312 DC address=172.16.16.77 mac-address=3E:10:DF:AF:D3:58 interface=vlan100-MNG-TR069
+       published=no status=stale
+313 DC address=172.16.16.78 mac-address=12:E1:7C:6F:F3:96 interface=vlan100-MNG-TR069
+       published=no status=stale
+314 DC address=172.16.16.68 mac-address=BE:86:FB:E6:8E:43 interface=vlan100-MNG-TR069
+       published=no status=stale
+315 DC address=172.16.16.79 mac-address=5A:0B:A1:8C:07:C2 interface=vlan100-MNG-TR069
+       published=no status=reachable
+316 DC address=172.16.16.80 mac-address=91:6F:B1:F9:BA:00 interface=vlan100-MNG-TR069
+       published=no status=stale
+317 DC address=172.16.16.81 mac-address=F9:A7:CB:F7:21:E8 interface=vlan100-MNG-TR069
+       published=no status=stale
+318 DC address=172.16.16.82 mac-address=10:F4:CF:C5:C8:13 interface=vlan100-MNG-TR069
+       published=no status=stale
+319 DC address=172.16.16.83 mac-address=19:02:DD:E6:15:5D interface=vlan100-MNG-TR069
+       published=no status=stale
