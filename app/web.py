@@ -57,6 +57,13 @@ def create_app(cfg: Config, monitor: Monitor, password: str) -> FastAPI:
         hours = min(max(hours, 0.25), 24 * 14)
         return monitor.store.series(int(time.time() - hours * 3600))
 
+    @app.get("/api/moves")
+    def moves(start: int, end: int):
+        """MAC yang pindah port pada rentang waktu tertentu (untuk titik di chart)."""
+        end = min(end, int(time.time()) + 60)
+        start = max(start, end - 14 * 86400)
+        return monitor.store.moves(start, end)
+
     @app.get("/api/incidents")
     def incidents():
         return monitor.store.incidents()

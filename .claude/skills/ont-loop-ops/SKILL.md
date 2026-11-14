@@ -26,7 +26,8 @@ Aturan:
   membaca, tetapi tetap beri tahu pengguna sebelum melakukannya di jaringan produksi.
 - Jangan pernah menampilkan isi `.env` atau `data/settings.json`; keduanya berisi password perangkat.
 - Di produksi, baca log dengan `journalctl -u ont-loop-detector -n 100` atau `docker compose logs --tail 100`.
-  Rincian pemasangan ada di `docs/PRODUKSI.md`.
+  Rincian pemasangan ada di `docs/PRODUKSI.md`. Server Windows: jalankan di Ubuntu WSL2 (bagian
+  "Cara C"); GenieACS sebaiknya tetap di Linux, jangan native Windows.
 
 ## Membaca keluaran `--check`
 

@@ -6,6 +6,8 @@ Panduan ini menjelaskan cara memasang ONT Loop Detector di server, dengan dua pi
 - **Cara B: tanpa Docker** (Python venv + systemd)
 
 Keduanya memakai kode dan file `.env` yang sama, dan hasil akhirnya sama. Pilih salah satu saja.
+Server Windows memakai salah satu cara itu di dalam WSL2; lihat
+[Cara C: server Windows](#4-cara-c-server-windows-lewat-wsl2).
 
 ## 1. Sebelum mulai
 
@@ -17,6 +19,10 @@ Pasang di **server GenieACS** (atau server lain di jaringan manajemen yang sama)
 - Server itu sudah dekat dengan switch dan router, jadi tidak perlu forward tambahan.
 
 Server perlu akses internet saat pemasangan, untuk mengambil kode dan dependensi.
+
+Server Linux tetap pilihan utama. Kalau yang tersedia hanya mesin Windows, aplikasi dijalankan di dalam
+Ubuntu lewat WSL2, bukan langsung di Windows; lihat
+[Cara C](#4-cara-c-server-windows-lewat-wsl2).
 
 ### Docker atau tanpa Docker?
 
@@ -41,11 +47,52 @@ ssh <user>@<alamat-server>
 
 ### A1. Pasang Docker (lewati bila sudah ada)
 
+**Periksa dulu** apakah Docker sudah terpasang:
+
 ```bash
-docker --version && docker compose version     # kalau dua-duanya muncul, lewati langkah ini
-curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker $USER                  # lalu keluar dan masuk lagi ke server
+docker --version && docker compose version
 ```
+
+Kalau dua baris versi muncul (misalnya `Docker version 27...` dan `Docker Compose version v2...`), Docker
+sudah ada: langsung ke langkah 4 di bawah (menyala saat boot), lalu A2. Kalau muncul
+`command not found`, pasang dengan langkah berikut.
+
+**1. Pasang Docker** (Ubuntu/Debian; skrip resmi Docker memasang Docker Engine dan plugin Compose sekaligus):
+
+```bash
+sudo apt update && sudo apt install -y curl git
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+rm get-docker.sh
+```
+
+Untuk distribusi lain (Rocky/AlmaLinux, CentOS, dll.), skrip yang sama juga bisa dipakai.
+
+**2. Izinkan user Anda memakai Docker tanpa `sudo`:**
+
+```bash
+sudo usermod -aG docker $USER
+exit                                            # keluar dari server, lalu masuk (ssh) lagi
+```
+
+**3. Uji Docker:**
+
+```bash
+docker --version && docker compose version     # dua-duanya harus muncul
+docker run --rm hello-world                     # harus menulis "Hello from Docker!"
+```
+
+Kalau muncul `permission denied ... docker.sock`, Anda belum keluar-masuk lagi setelah langkah 2.
+
+**4. Pastikan Docker menyala sendiri saat server reboot** (wajib, karena container aplikasi hanya bisa
+menyala otomatis bila layanan Docker sendiri menyala):
+
+```bash
+sudo systemctl enable --now docker containerd
+systemctl is-enabled docker                     # harus "enabled"
+```
+
+Setelah ini lanjut ke A2.
 
 ### A2. Ambil kode
 
@@ -94,6 +141,26 @@ Pemeriksaan sekali jalan di terminal:
 ```bash
 docker compose exec ont-loop-detector python -m app.main --check
 ```
+
+**Berjalan otomatis.** Perintah `docker compose up -d` cukup dijalankan sekali. Container memakai
+`restart: unless-stopped`, jadi menyala lagi sendiri bila mati dan saat server reboot (asal layanan Docker
+sudah `enabled`, langkah A1 nomor 4). Pengecualian: container yang sengaja dihentikan dengan
+`docker compose stop` atau `down` tidak menyala sendiri setelah reboot sampai `docker compose up -d`
+dijalankan lagi. Uji sekali dengan `sudo reboot`, lalu `docker compose ps` harus kembali `healthy`.
+
+**Pindah dari aplikasi yang dijalankan manual.** Bila sebelumnya aplikasi dijalankan langsung dengan
+`python -m app.main`, bawa pengaturannya (alamat dan password perangkat) dan riwayatnya ke container:
+
+```bash
+docker cp data/settings.json ont-loop-detector:/app/data/
+docker cp data/loopdetector.db ont-loop-detector:/app/data/     # opsional: riwayat grafik dan kejadian
+docker compose exec -u root ont-loop-detector chown -R ontloop: /app/data
+docker compose restart
+```
+
+Lalu hentikan proses manual yang lama. Jangan jalankan keduanya bersamaan: perangkat dibaca dua kali dan
+notifikasi Telegram terkirim ganda. Bila dashboard ingin tetap di port lama, isi `WEB_PORT` di `.env`
+dengan port itu (misalnya `8989`), lalu `docker compose up -d`.
 
 ### A5. Memperbarui
 
@@ -234,7 +301,120 @@ sudo rm -rf /opt/ont-loop-detector
 sudo userdel ontloop
 ```
 
-## 4. Setelah terpasang (berlaku untuk kedua cara)
+## 4. Cara C: server Windows (lewat WSL2)
+
+Aplikasi ini dan GenieACS dibuat dan diuji untuk Linux. Di Windows, keduanya dijalankan di dalam Ubuntu
+memakai **WSL2** (Linux bawaan Windows). Setelah Ubuntu siap, pemasangannya sama persis dengan Cara B
+(atau Cara A), jadi bagian ini hanya menjelaskan persiapan Windows-nya.
+
+Kenapa tidak langsung di Windows: aplikasi ini sebenarnya bisa jalan di Windows, tetapi panduan layanan,
+izin file `data/settings.json` (berisi password perangkat), dan cadangan semuanya mengandaikan Linux.
+GenieACS di Windows tidak didukung resmi, dan fitur Ping-nya memanggil perintah `ping` dengan opsi Linux.
+
+### C1. Prasyarat
+
+- **Windows 11 22H2 atau lebih baru** (atau Windows Server 2025). Mode jaringan *mirrored* di langkah C4
+  hanya ada di versi ini. Windows 10 masih bisa, tetapi jaringannya lebih repot (lihat catatan di C4).
+- Virtualisasi aktif di BIOS (Intel VT-x / AMD-V).
+- Mesin menyala 24 jam: matikan *sleep* dan *hibernate* di Power Options.
+
+### C2. Pasang WSL2 dan Ubuntu
+
+Buka **PowerShell sebagai Administrator**:
+
+```powershell
+wsl --install -d Ubuntu-24.04
+```
+
+Reboot bila diminta. Saat Ubuntu pertama kali terbuka, buat username dan password Linux.
+
+### C3. Aktifkan systemd di Ubuntu
+
+Di terminal Ubuntu:
+
+```bash
+sudo tee /etc/wsl.conf >/dev/null <<'EOF'
+[boot]
+systemd=true
+EOF
+```
+
+Lalu di PowerShell: `wsl --shutdown`, dan buka Ubuntu lagi. Periksa dengan `systemctl is-system-running`
+(hasil `running` atau `degraded` berarti systemd sudah aktif).
+
+### C4. Jaringan
+
+Secara bawaan WSL2 berada di belakang NAT dengan IP sendiri yang berubah tiap restart. Mode *mirrored*
+membuat Ubuntu memakai IP Windows, sehingga dashboard bisa dibuka dari PC lain dan switch/router/GenieACS
+melihat alamat yang sama dengan Windows.
+
+Buat file `%UserProfile%\.wslconfig` (misalnya `C:\Users\<nama>\.wslconfig`) di Windows:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
+
+Lalu `wsl --shutdown` di PowerShell. Buka port dashboard di firewall (PowerShell Administrator; ganti
+8088 bila `WEB_PORT` diubah):
+
+```powershell
+New-NetFirewallHyperVRule -Name OntLoopDetector -DisplayName "ONT Loop Detector" -Direction Inbound `
+  -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 8088
+New-NetFirewallRule -DisplayName "ONT Loop Detector" -Direction Inbound -Protocol TCP -LocalPort 8088 -Action Allow
+```
+
+Baris pertama membuka port untuk WSL (firewall Hyper-V), baris kedua untuk firewall Windows biasa.
+
+*Windows 10 (tanpa mirrored):* teruskan port dari Windows ke IP WSL dengan
+`netsh interface portproxy add v4tov4 listenport=8088 connectport=8088 connectaddress=<IP WSL>`
+(IP WSL dari `hostname -I` di Ubuntu). IP itu berubah setiap WSL restart, jadi perintah ini harus diulang;
+karena itu Windows 11 lebih disarankan.
+
+### C5. Pasang aplikasi di dalam Ubuntu
+
+Di terminal Ubuntu, ikuti **[Cara B](#3-cara-b-tanpa-docker)** dari B1 sampai B5 tanpa perubahan.
+Isi `GENIEACS_URL` dengan alamat GenieACS seperti biasa (`127.0.0.1` hanya bila GenieACS juga dipasang
+di Ubuntu WSL yang sama).
+
+Cara A juga bisa: pasang Docker Engine di dalam Ubuntu (langkah A1), bukan Docker Desktop. Bila memakai
+**Docker Desktop for Windows**, `network_mode: host` hanya bekerja setelah "Enable host networking"
+dinyalakan di Settings → Resources → Network (Docker Desktop 4.34 ke atas). Tanpa itu, pakai mode bridge
+(lihat [Catatan mode jaringan](#catatan-mode-jaringan)) dan isi host GenieACS dengan IP-nya, bukan `127.0.0.1`.
+
+### C6. Menyala sendiri setelah Windows reboot
+
+WSL tidak menyala sendiri saat Windows boot, dan berhenti bila tidak ada program Windows yang memakainya.
+Buat tugas di **Task Scheduler** yang menyalakan Ubuntu dan menjaganya tetap hidup:
+
+1. Task Scheduler → *Create Task…*
+2. Tab *General*: nama "ONT Loop Detector (WSL)", pilih user Windows pemilik Ubuntu tadi, centang
+   *Run whether user is logged on or not* dan *Run with highest privileges*.
+3. Tab *Triggers*: *New…* → *At startup*.
+4. Tab *Actions*: *New…* → Program `C:\Windows\System32\wsl.exe`, arguments
+   `-d Ubuntu-24.04 --exec sleep infinity`.
+5. Tab *Settings*: hilangkan centang *Stop the task if it runs longer than…*.
+
+Setelah boot, systemd di Ubuntu menyalakan service `ont-loop-detector` (atau container Docker) sendiri.
+Atur juga *Active hours* di Windows Update supaya reboot otomatis tidak terjadi di jam sibuk.
+
+### C7. Cadangan
+
+Data aplikasi ada di dalam Ubuntu (`/opt/ont-loop-detector/data` untuk Cara B), jadi cadangan memakai
+langkah [B7](#b7-cadangan-dan-pemulihan). Untuk mencadangkan seluruh Ubuntu sekaligus (PowerShell):
+`wsl --export Ubuntu-24.04 D:\cadangan\ubuntu.tar`.
+
+### C8. Bagaimana dengan GenieACS?
+
+Sarannya: **biarkan GenieACS tetap di server Linux yang sekarang**; aplikasi ini cukup diarahkan ke
+alamatnya. GenieACS mengurus semua ONT pelanggan, dan memindahkannya menambah risiko tanpa keuntungan.
+
+Kalau GenieACS memang harus pindah ke mesin Windows, pasang di **Ubuntu WSL yang sama** dengan panduan
+resmi GenieACS untuk Linux (Node.js, MongoDB, layanan systemd), jangan versi native Windows. Dengan mode
+mirrored, ONT tetap menghubungi IP Windows; buka port CWMP (7547), dan UI (3000) bila perlu, dengan dua
+perintah firewall seperti di C4.
+
+## 5. Setelah terpasang (berlaku untuk semua cara)
 
 ### Membuka dashboard
 
@@ -285,7 +465,7 @@ Begitu pula di switch: tombol aksi port memerlukan password enable.
 Di switch, buat username tersendiri untuk aplikasi. Aplikasi menjalankan `show clock`, `show logging`,
 dan `show mac address-table`, dan masuk ke mode enable bila password enable diisi.
 
-## 5. Kalau ada masalah
+## 6. Kalau ada masalah
 
 | Gejala | Kemungkinan penyebab dan jalan keluar |
 |---|---|
@@ -297,9 +477,12 @@ dan `show mac address-table`, dan masuk ke mode enable bila password enable diis
 | Docker: pengaturan hilang setelah pemulihan cadangan | Langkah `chown` di A6 terlewat. |
 | Dashboard menulis "Status loop belum bisa dipastikan" | Switch dan router belum diisi atau gagal dibaca. Arahkan kursor ke titik sumber data di kanan atas untuk melihat pesan kesalahannya. |
 | Lupa password dashboard | Ganti `WEB_PASSWORD` di `.env`, lalu restart. |
+| Windows: dashboard terbuka di mesin itu, tetapi tidak dari PC lain | Mode mirrored belum aktif (`.wslconfig` lalu `wsl --shutdown`), atau salah satu dari dua aturan firewall di C4 belum dibuat. |
+| Windows: aplikasi mati setelah logout atau setelah Windows reboot | Tugas Task Scheduler di C6 belum ada, tidak dicentang *Run whether user is logged on or not*, atau masih dibatasi *Stop the task if it runs longer than…*. |
+| Windows: jam di Ubuntu melenceng setelah mesin sempat sleep | Jalankan `wsl --shutdown` lalu buka Ubuntu lagi, dan matikan sleep di Power Options. |
 | Ada kejadian loop yang terlewat | Buffer log bawaan switch Cisco kecil (4096 byte). Perbesar di switch: `logging buffered 65536`. |
 
-## 6. Daftar periksa setelah pasang
+## 7. Daftar periksa setelah pasang
 
 - [ ] Service/container berjalan: `systemctl status ont-loop-detector` atau `docker compose ps`.
 - [ ] Di server, `curl -u admin:<password> http://127.0.0.1:8088/api/state` mengembalikan `"ready":true`.
@@ -318,4 +501,5 @@ status healthy); pemasangan tanpa Docker dari clone bersih sampai `--check`.
 
 Belum diuji, dan baru akan terbukti di server Anda: koneksi langsung ke GenieACS, switch, dan router
 dari server production; koneksi switch lewat SSH (yang diuji hanya Telnet); pengiriman pesan Telegram;
-dan pemasangan unit systemd di server sungguhan.
+dan pemasangan unit systemd di server sungguhan. Cara C (Windows lewat WSL2) belum pernah diuji di mesin
+Windows; langkahnya disusun dari dokumentasi Microsoft dan Docker, jadi mohon laporkan bila ada yang berbeda.

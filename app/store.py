@@ -7,6 +7,8 @@ import threading
 import time
 from pathlib import Path
 
+MAX_MOVES = 200  # batas baris per pemeriksaan supaya badai loop tidak membengkakkan database
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS samples (
   ts INTEGER PRIMARY KEY, loop_active INTEGER, flap_macs INTEGER, flap_events INTEGER,
@@ -16,6 +18,9 @@ CREATE TABLE IF NOT EXISTS incidents (
   blocked_vlans TEXT, suspects TEXT);
 CREATE TABLE IF NOT EXISTS scores (ts INTEGER, device_id TEXT, score INTEGER, level TEXT);
 CREATE INDEX IF NOT EXISTS scores_dev ON scores(device_id, ts);
+CREATE TABLE IF NOT EXISTS moves (
+  ts INTEGER, mac TEXT, events INTEGER, ports TEXT, kind TEXT, onts TEXT, flapping INTEGER);
+CREATE INDEX IF NOT EXISTS moves_ts ON moves(ts);
 """
 
 
@@ -42,6 +47,12 @@ class Store:
             self._db.executemany(
                 "INSERT INTO scores VALUES (?,?,?,?)",
                 [(ts, s["id"], s["score"], s["level"]) for s in a["suspects"] if s["level"] != "normal"],
+            )
+            self._db.execute("DELETE FROM moves WHERE ts=?", (ts,))
+            self._db.executemany(
+                "INSERT INTO moves VALUES (?,?,?,?,?,?,?)",
+                [(ts, m["mac"], m["events"], json.dumps(m["ports"]), m["kind"], json.dumps(m["onts"]), int(m["flapping"]))
+                 for m in a.get("moved", [])[:MAX_MOVES]],
             )
 
     def open_incident(self, a: dict, ts: int | None = None) -> int:
@@ -75,6 +86,7 @@ class Store:
         with self._lock, self._db:
             self._db.execute("DELETE FROM samples WHERE ts<?", (cut,))
             self._db.execute("DELETE FROM scores WHERE ts<?", (cut,))
+            self._db.execute("DELETE FROM moves WHERE ts<?", (cut,))
 
     # ------------------------------------------------------------ baca
     def open_incident_id(self) -> int | None:
@@ -96,6 +108,34 @@ class Store:
                 # ambil nilai terburuk dalam satu kelompok supaya lonjakan singkat tidak hilang
                 out[k].append((min(vals) if k == "hotspot_active" else max(vals)) if vals else None)
         return out
+
+    def moves(self, start: int, end: int) -> dict:
+        """MAC yang pindah port pada pemeriksaan di antara start..end (detik), digabung per MAC.
+
+        Jendela flapping saling tumpang tindih antar-pemeriksaan, jadi per MAC yang dilaporkan adalah
+        jumlah pindah tertinggi dalam satu pemeriksaan, bukan penjumlahan."""
+        with self._lock:
+            rows = self._db.execute(
+                "SELECT mac, MAX(events) AS events, MAX(flapping) AS flapping, COUNT(*) AS seen, MIN(ts) AS first,"
+                " MAX(ts) AS last, group_concat(DISTINCT ports) AS ports, group_concat(DISTINCT onts) AS onts,"
+                " MAX(kind) AS kind"
+                " FROM moves WHERE ts>=? AND ts<=? GROUP BY mac"
+                " ORDER BY MAX(flapping) DESC, MAX(events) DESC, mac LIMIT ?",
+                (start, end, MAX_MOVES),
+            ).fetchall()
+            n = self._db.execute("SELECT COUNT(*) FROM samples WHERE ts>=? AND ts<=?", (start, end)).fetchone()[0]
+
+        def union(blob: str | None) -> list[str]:
+            # group_concat menggabungkan beberapa larik JSON dengan koma: "[..],[..]"
+            return sorted({x for part in json.loads(f"[{blob or ''}]") for x in part})
+
+        macs = [
+            {"mac": r["mac"], "events": r["events"], "ports": union(r["ports"]), "kind": r["kind"],
+             "onts": union(r["onts"]), "flapping": bool(r["flapping"]), "first": r["first"], "last": r["last"],
+             "seen": r["seen"]}
+            for r in rows
+        ]
+        return {"start": start, "end": end, "samples": n, "macs": macs}
 
     def incidents(self, limit: int = 20) -> list[dict]:
         with self._lock:

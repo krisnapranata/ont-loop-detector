@@ -71,3 +71,31 @@ def test_works_with_missing_sources():
     assert analyze(Config(), onts, None, None)["loop"]["active"] is False
     assert analyze(Config(), None, sw, rt)["loop"]["active"] is True
     assert analyze(Config(), None, None, None)["suspects"] == []
+
+
+def test_moved_lists_every_mac_behind_flap_events():
+    res, _ = run()
+    moved = res["moved"]
+    # jumlah per MAC harus sama dengan angka di chart "MAC berpindah port"
+    assert sum(m["events"] for m in moved) == res["counts"]["flap_events"]
+    assert {m["mac"] for m in moved if m["flapping"]} == {f["mac"] for f in res["flapping"]}
+    assert any(not m["flapping"] and m["events"] == 1 for m in moved)  # roaming sekali tetap tercatat
+    assert any(m["kind"] == "MAC router sendiri" for m in moved)
+
+
+def test_store_keeps_moved_macs_per_check():
+    from app.store import Store
+
+    res, _ = run()
+    st = Store(":memory:")
+    st.add_sample(res, 1000)
+    st.add_sample({**res, "moved": res["moved"][:1]}, 1060)
+    one = st.moves(1001, 1060)
+    assert one["samples"] == 1 and [m["mac"] for m in one["macs"]] == [res["moved"][0]["mac"]]
+    both = st.moves(0, 2000)
+    assert both["samples"] == 2 and len(both["macs"]) == len(res["moved"])
+    top = next(m for m in both["macs"] if m["mac"] == res["moved"][0]["mac"])
+    assert top["seen"] == 2 and top["first"] == 1000 and top["last"] == 1060
+    assert top["ports"] == res["moved"][0]["ports"]
+    st.add_sample(res, 1000)  # pemeriksaan yang sama disimpan ulang tidak menggandakan baris
+    assert st.moves(0, 1000)["macs"][0]["seen"] == 1

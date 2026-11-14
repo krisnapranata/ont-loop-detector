@@ -200,6 +200,26 @@ h2 { font-size: 18px; font-weight: 700; letter-spacing: -.02em; }
 .sw-risk { background: none; height: 0; border-top: 3px dashed var(--warning); }
 .u-legend { display: none; }
 .empty { color: var(--muted); font-size: 14px; padding: 14px 0; }
+/* rincian MAC pindah port untuk titik chart yang dipilih */
+.chart .u-over { cursor: pointer; }
+.moves { margin-top: 14px; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--line); --tc: var(--f-orange);
+  background: linear-gradient(180deg, var(--panel-top), var(--panel-bot)); box-shadow: inset 0 1px 0 var(--emb-hi), 0 1px 2px var(--emb-lo); }
+.moves:empty { display: none; }
+.moves > .empty { margin: 0; }
+.moves-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; }
+.moves-head .ct { min-width: 0; flex: 1 1 260px; }
+.moves-head h3 { font-size: 14.5px; font-weight: 800; color: var(--ink); }
+.moves-head small { display: block; font-size: 12.5px; color: var(--muted); }
+.mv-seg { display: flex; gap: 2px; background: var(--raised); border: 1px solid var(--line); border-radius: 99px; padding: 3px; }
+.mv-seg button { border: 0; background: none; padding: 4px 12px; font-size: 13px; font-weight: 600; border-radius: 99px; color: var(--ink2); cursor: pointer; }
+.mv-seg button:hover { color: var(--ink); }
+.mv-seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); }
+.moves table { font-size: 13.5px; }
+.mv-badge { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 12px; font-weight: 700; white-space: nowrap;
+  color: var(--ink2); background: color-mix(in srgb, var(--f-slate) 16%, transparent); }
+.mv-badge.hot { color: #fff; background: linear-gradient(160deg, color-mix(in srgb, var(--f-orange) 75%, #fff), var(--f-orange)); }
+.moves td:first-child, .moves th:first-child { padding-left: 12px; }
+.moves tr.flap td:first-child { box-shadow: inset 3px 0 0 var(--f-orange); }
 .tableview { margin-top: 10px; font-size: 13px; }
 .tableview summary { cursor: pointer; color: var(--ink2); }
 .scroll { max-height: 260px; overflow: auto; margin-top: 8px; }

@@ -50,7 +50,9 @@ Data flows one way: **collectors → detector → monitor → store / web**.
 - `app/detector.py::analyze(cfg, onts, switch, router)` is a **pure function** returning the JSON-able
   dict that everything downstream consumes (API, dashboard, Telegram text, store). Any source may be
   `None`. Changing a key here means changing `app/static/app.js`, `app/notifier.py`, `app/store.py`
-  (`add_sample`, `_top`) and `app/main.py::_print_report` together.
+  (`add_sample`, `_top`) and `app/main.py::_print_report` together. `moved` lists every MAC behind
+  `counts.flap_events` (including single roams); the store keeps it per check in the `moves` table so
+  `/api/moves?start=&end=` can show which MACs make up a chart point (panel under the dashboard charts).
 - `app/monitor.py::Monitor` owns one background thread. Each tick refreshes sources, calls `analyze`,
   tracks incident open/close (a loop only ends after `CLEAR_TICKS` clean ticks, because router
   loop-protect re-enables the VLAN briefly every few minutes), fires notifications, and stores a sample.

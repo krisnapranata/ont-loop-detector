@@ -24,6 +24,8 @@
   const FLAG = { flap: "berpindah port", hotspot_lan: "hotspot lewat LAN", cross: "terlihat di trunk lain", multi: "ada di ONT lain" };
 
   let hours = 3, charts = [], series = null, chartKey = "", bandList = [];
+  // pilihan rincian MAC di bawah chart: null = titik tertinggi otomatis, {ts} = titik yang diklik, {range:true} = seluruh rentang
+  let moveSel = null, moveTs = null, moveKey = "";
   const open = new Set();
   const last = {}; // tanda tangan tiap bagian, supaya hanya digambar ulang bila datanya berubah
   let firstOpenDone = false, firstList = true;
@@ -348,7 +350,7 @@
     set("now1", lastOf(d.flap_events)[1] ?? "–");
     set("now2", lastOf(d.hotspot_active)[1] ?? "–");
     set("now3", `${lastOf(d.strong)[1] ?? 0} / ${lastOf(d.risk)[1] ?? 0}`);
-    $("sub1").textContent = `tertinggi ${max(d.flap_events)} pada rentang ini`;
+    $("sub1").textContent = `tertinggi ${max(d.flap_events)} pada rentang ini, klik titik untuk melihat MAC`;
     $("sub2").textContent = `tertinggi ${max(d.hotspot_active)} pada rentang ini`;
   }
   const NAMES = [["pindah port"], ["user"], ["tersangka kuat", "berisiko"]];
@@ -413,6 +415,14 @@
             // titik terakhir: cincin berwarna di nilai terbaru tiap garis utama
             draw: [(u) => {
               const ctx = u.ctx, dpr = devicePixelRatio || 1;
+              if (moveTs != null) {
+                // garis titik yang rinciannya sedang ditampilkan di bawah chart
+                const x = Math.round(u.valToPos(moveTs, "x", true));
+                if (x >= u.bbox.left && x <= u.bbox.left + u.bbox.width) {
+                  ctx.save(); ctx.strokeStyle = css("--ink2"); ctx.lineWidth = 1.5 * dpr; ctx.setLineDash([4 * dpr, 3 * dpr]);
+                  ctx.beginPath(); ctx.moveTo(x, u.bbox.top); ctx.lineTo(x, u.bbox.top + u.bbox.height); ctx.stroke(); ctx.restore();
+                }
+              }
               u.series.forEach((s, si) => {
                 if (!si || !s.show || s._glow) return;
                 const [i, v] = lastOf(u.data[si]);
@@ -439,6 +449,13 @@
           },
         }, [d.ts, ...DRAWN[idx].map((c) => d[c])], el);
         u.over.addEventListener("mouseleave", () => (tip.hidden = true));
+        u.over.addEventListener("click", () => {
+          const i = u.cursor.idx;
+          if (i == null || !series) return;
+          moveSel = { ts: series.ts[i] };
+          loadMoves();
+          $("moves").scrollIntoView({ behavior: calm ? "auto" : "smooth", block: "nearest" });
+        });
         charts.push(u);
       };
       const spline = uPlot.paths.spline ? uPlot.paths.spline() : undefined, step = uPlot.paths.stepped({ align: 1 });
@@ -453,12 +470,78 @@
     $("seriesTable").innerHTML = `<div class="scroll"><table><thead><tr><th>Waktu</th><th class="num">Pindah port</th><th class="num">User hotspot</th><th class="num">Tersangka kuat</th><th class="num">Berisiko</th><th>Loop</th></tr></thead><tbody>${rows.map((i) =>
       `<tr><td>${fmtTime(d.ts[i])}</td><td class="num">${d.flap_events[i] ?? "–"}</td><td class="num">${d.hotspot_active[i] ?? "–"}</td><td class="num">${d.strong[i] ?? "–"}</td><td class="num">${d.risk[i] ?? "–"}</td><td>${d.loop_active[i] ? "ya" : "tidak"}</td></tr>`).join("")}</tbody></table></div>`;
   }
+  // ------------------------------------------------------------------ rincian MAC pindah port per titik chart
+  const peakIdx = (d) => {
+    let best = -1;
+    d.flap_events.forEach((v, i) => { if (v > 0 && (best < 0 || v >= d.flap_events[best])) best = i; });
+    return best;
+  };
+  const nearestIdx = (d, ts) => d.ts.reduce((b, t, i) => (Math.abs(t - ts) < Math.abs(d.ts[b] - ts) ? i : b), 0);
+  // MAC router yang ikut pindah = frame router berputar kembali, tanda loop walau hanya sekali
+  const moveBadge = (m) => m.kind === "MAC router sendiri" ? '<span class="mv-badge hot">MAC router kembali</span>'
+    : m.flapping ? '<span class="mv-badge hot">berpindah-pindah</span>'
+    : `<span class="mv-badge">${m.events > 1 ? "di bawah ambang" : "sekali pindah (roaming)"}</span>`;
+  // gambar ulang garis penanda setelah uPlot selesai menyiapkan skala (jangan di tengah pembuatan chart)
+  const markCharts = () => requestAnimationFrame(() => charts.forEach((u) => u.redraw(false)));
+  async function loadMoves() {
+    const box = $("moves"), d = series;
+    if (!box) return;
+    if (!d || !d.ts.length) { box.innerHTML = ""; moveTs = null; return; }
+    const step = d.ts.length > 1 ? d.ts[1] - d.ts[0] : 60;
+    let start, end, idx = -1;
+    if (moveSel?.range) { start = d.ts[0] - step + 1; end = d.ts[d.ts.length - 1]; }
+    else {
+      idx = moveSel ? nearestIdx(d, moveSel.ts) : peakIdx(d);
+      if (idx < 0) {
+        moveTs = null; moveKey = ""; markCharts();
+        box.innerHTML = `<p class="empty">Tidak ada MAC yang pindah port dalam ${hours} jam terakhir.</p>`;
+        return;
+      }
+      // satu titik chart bisa mewakili beberapa pemeriksaan (rentang panjang diringkas)
+      start = (idx > 0 ? d.ts[idx - 1] : d.ts[idx] - step) + 1; end = d.ts[idx];
+    }
+    moveTs = idx >= 0 ? d.ts[idx] : null;
+    markCharts();
+    const key = [start, end, idx >= 0 ? d.flap_events[idx] : "r", !!moveSel].join("|");
+    if (key === moveKey) return;
+    moveKey = key;
+    let r;
+    try { r = await (await api(`moves?start=${start}&end=${end}`)).json(); } catch { box.innerHTML = '<p class="empty">Rincian MAC tidak bisa dimuat.</p>'; return; }
+    if (moveKey !== key) return;
+    const n = idx >= 0 ? d.flap_events[idx] : null;
+    const when = moveSel?.range ? `dalam ${hours} jam terakhir`
+      : r.samples > 1 ? `pukul ${fmtTime(start)}–${fmtTime(end)}` : `pukul ${fmtTime(end)}`;
+    const title = moveSel ? `MAC yang pindah port ${when}` : `Titik tertinggi: MAC yang pindah port ${when}`;
+    const sub = moveSel?.range
+      ? `${r.macs.length} MAC berbeda. Angka "pindah" adalah jumlah tertinggi dalam satu pemeriksaan.`
+      : `${n} perpindahan${r.samples > 1 ? ` (tertinggi dari ${r.samples} pemeriksaan)` : ""}. Klik titik lain di grafik untuk melihat waktu lain.`;
+    const rows = r.macs.map((m) => `<tr class="${m.flapping || m.kind === "MAC router sendiri" ? "flap" : ""}"><td class="mono">${esc(m.mac)}</td>
+        <td class="num">${m.events}×</td>
+        <td>${moveBadge(m)}</td>
+        <td class="nowrap">${esc(m.ports.join(" dan "))}</td>
+        <td>${esc(m.onts.length ? "host ONT " + m.onts.join(", ") : m.kind)}</td>
+        ${moveSel?.range ? `<td class="nowrap">${esc(fmtTime(m.first))}${m.last !== m.first ? "–" + esc(fmtTime(m.last)) : ""}</td>` : ""}</tr>`).join("");
+    box.innerHTML = `<div class="moves-head"><div class="ct"><h3>${esc(title)}</h3><small>${esc(sub)}</small></div>
+      <div class="mv-seg" role="group" aria-label="Pilih waktu">
+        <button type="button" data-mv="peak" aria-pressed="${!moveSel}">Titik tertinggi</button>
+        <button type="button" data-mv="range" aria-pressed="${!!moveSel?.range}">Seluruh ${hours} jam</button></div></div>
+      ${r.macs.length ? `<div class="xscroll"><table><thead><tr><th>MAC</th><th class="num">Pindah</th><th>Sifat</th><th>Antara port</th><th>Jenis / ONT</th>${moveSel?.range ? "<th>Terlihat</th>" : ""}</tr></thead><tbody>${rows}</tbody></table></div>`
+        : `<p class="empty">${n ? "Rincian MAC untuk waktu ini belum tersimpan (data sebelum fitur ini dipasang)." : "Tidak ada MAC yang pindah port pada waktu ini."}</p>`}`;
+  }
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-mv]");
+    if (!b) return;
+    moveSel = b.dataset.mv === "range" ? { range: true } : null;
+    loadMoves();
+  });
   async function loadSeries() {
     try { series = await (await api(`series?hours=${hours}`)).json(); drawCharts(); } catch {}
+    loadMoves();
   }
   document.querySelectorAll(".range button").forEach((b) => {
     b.onclick = () => {
       hours = +b.dataset.h;
+      moveSel = null;
       document.querySelectorAll(".range button").forEach((x) => x.setAttribute("aria-pressed", x === b));
       loadSeries();
     };

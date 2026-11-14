@@ -24,19 +24,27 @@ def _seed_demo_history(store: Store, a: dict) -> None:
     now = int(time.time())
     start_loop = now - 45 * 60
     quiet = {**a, "loop": {**a["loop"], "active": False, "blocked_vlans": []}, "suspects": []}
+    # di luar loop: sesekali satu HP roaming pindah port sekali (bukan flapping)
+    roam = [{**m, "events": 1, "flapping": False} for m in a.get("moved", []) if "acak" in m["kind"]][:3] or [
+        {"mac": "da:a1:19:00:00:01", "events": 1, "ports": ["Gi1/0/47", "Gi1/0/48"], "kind": "MAC acak (HP/laptop)",
+         "onts": [], "flapping": False}]
     for ts in range(now - 3 * 3600, now, 60):
         if ts < start_loop:
             users = int(215 + 25 * math.sin(ts / 1500) + rnd.randint(-6, 6))
+            moved = [rnd.choice(roam)] if rnd.random() < 0.12 else []
             c = {**a["counts"], "strong": 0, "risk": 4, "flapping_macs": 0,
-                 "flap_events": 1 if rnd.random() < 0.12 else 0, "hotspot_active": users}
-            store.add_sample({**quiet, "counts": c}, ts)
+                 "flap_events": len(moved), "hotspot_active": users}
+            store.add_sample({**quiet, "counts": c, "moved": moved}, ts)
         else:
             since = ts - start_loop
             blip = since % 300 < 60 and since > 60  # loop-protect mencoba menyalakan lagi tiap 5 menit
             c = {**a["counts"], "strong": 1 if since > 240 else 0, "risk": 3 if since > 240 else 4,
                  "flapping_macs": rnd.randint(4, 6), "flap_events": rnd.randint(24, 36),
                  "hotspot_active": rnd.randint(3, 14) if blip else 0}
-            store.add_sample({**a, "counts": c}, ts)
+            moved = [{**m, "events": m["events"] + rnd.randint(0, 2)} for m in a.get("moved", [])]
+            if moved:
+                c["flap_events"] = sum(m["events"] for m in moved)
+            store.add_sample({**a, "counts": c, "moved": moved}, ts)
     old = store.open_incident({**a, "suspects": a["suspects"][:1]}, now - 26 * 3600)
     store.close_incident(old, now - 26 * 3600 + 38 * 60)
     store.open_incident(a, start_loop)

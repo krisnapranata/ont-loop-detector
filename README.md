@@ -71,10 +71,24 @@ nama pelanggan diganti; password dibuang).
 
 Panduan lengkap, langkah demi langkah, ada di **[docs/PRODUKSI.md](docs/PRODUKSI.md)**. Ada dua cara,
 pilih salah satu.
+Untuk server Windows, aplikasi dijalankan di dalam Ubuntu lewat WSL2; lihat bagian "Cara C" di panduan itu.
 
 **Dengan Docker**
 
+Bila Docker belum terpasang (`docker --version` tidak dikenal), pasang dulu, lalu keluar dan masuk
+lagi ke server supaya user Anda bisa memakai Docker:
+
 ```bash
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+sudo systemctl enable --now docker        # Docker (dan aplikasinya) ikut menyala saat server reboot
+exit
+```
+
+Setelah masuk lagi, pasang aplikasinya:
+
+```bash
+sudo mkdir -p /opt/ont-loop-detector && sudo chown $USER: /opt/ont-loop-detector
 git clone https://github.com/krisnapranata/ont-loop-detector.git /opt/ont-loop-detector
 cd /opt/ont-loop-detector
 cp .env.example .env && nano .env && chmod 600 .env     # isi minimal WEB_PASSWORD
@@ -166,7 +180,7 @@ app/web.py        API + dashboard
 app/static/       dashboard (HTML/CSS/JS murni + uPlot, tanpa CDN; animasi mati otomatis bila
                   sistem diatur "kurangi gerakan")
 tests/            tes parser dan tes replay kejadian
-docs/PRODUKSI.md  panduan pemasangan di server (Docker dan tanpa Docker)
+docs/PRODUKSI.md  panduan pemasangan di server (Docker, tanpa Docker, Windows lewat WSL2)
 Dockerfile, docker-compose.yml   pemasangan dengan Docker
 deploy/           unit systemd untuk pemasangan tanpa Docker
 ```

@@ -212,10 +212,11 @@ def analyze(
 
     # ---------------------------------------------------------- daftar MAC flapping
     by_id = {o.id: o for o in onts}
-    flap_list = []
-    for m, n in sorted(flapping.items(), key=lambda kv: -kv[1]):
+    def describe(m: str, n: int) -> dict:
         owners = sorted(by_id[i].serial for i in seen_on.get(m, ()) if i in by_id)
-        if owners:
+        if m in router_macs:
+            kind = "MAC router sendiri"
+        elif owners:
             kind = "host ONT"
         elif oui(m) in vendor_by_oui:
             kind = f"perangkat {vendor_by_oui[oui(m)]} (bukan ONT terdaftar)"
@@ -223,7 +224,14 @@ def analyze(
             kind = "MAC acak (HP/laptop)"
         else:
             kind = "tidak dikenal"
-        flap_list.append({"mac": m, "events": n, "ports": sorted(ports[m]), "kind": kind, "onts": owners})
+        return {"mac": m, "events": n, "ports": sorted(ports[m]), "kind": kind, "onts": owners}
+
+    flap_list = [describe(m, n) for m, n in sorted(flapping.items(), key=lambda kv: -kv[1])]
+    # semua MAC yang pindah port di jendela ini (termasuk sekali pindah); jumlah events-nya = flap_events
+    moved = [
+        {**describe(m, n), "flapping": m in flapping}
+        for m, n in sorted(events.items(), key=lambda kv: (-kv[1], kv[0]))
+    ]
 
     strong = sum(1 for s in suspects if s["level"] == LEVEL_STRONG)
     risk = sum(1 for s in suspects if s["level"] == LEVEL_RISK)
@@ -246,6 +254,7 @@ def analyze(
         },
         "suspects": suspects,
         "flapping": flap_list,
+        "moved": moved,
         "vlans": [
             {"name": v.name, "vlan_id": v.vlan_id, "lp_status": v.lp_status, "running": v.running, "blocked": v.blocked}
             for v in (router.vlans if router else [])
