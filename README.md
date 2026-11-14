@@ -116,6 +116,156 @@ app/static/       dashboard (HTML/CSS/JS murni + uPlot, tanpa CDN)
 tests/            tes parser dan tes replay kejadian
 ```
 
+## Panduan FastAPI untuk proyek ini
+
+Bagian web aplikasi ini memakai [FastAPI](https://fastapi.tiangolo.com/), bukan Django. Panduan
+ini ditulis untuk yang terbiasa dengan Django dan ingin mengubah atau menambah sesuatu di sini.
+
+### FastAPI dibanding Django
+
+FastAPI adalah kerangka kecil untuk membuat API: Anda menulis fungsi Python, memberi alamat
+lewat dekorator, dan nilai yang dikembalikan otomatis menjadi JSON. Tidak ada `manage.py`,
+ORM, migrasi, atau halaman admin bawaan.
+
+| Di Django | Di proyek ini |
+|---|---|
+| `python manage.py runserver 0.0.0.0:8989` | `.venv/bin/python -m app.main --host 0.0.0.0 --port 8989` |
+| `settings.py` | `.env` dan halaman Pengaturan (`app/config.py`, `app/settings.py`) |
+| `urls.py` + `views.py` | dekorator `@app.get(...)` di atas fungsi, semuanya di `app/web.py` |
+| `models.py` + `migrate` | tidak ada ORM; tabel SQLite dibuat otomatis oleh `app/store.py` |
+| template HTML | file statis di `app/static/` yang mengambil data dari API lewat JavaScript |
+| `python manage.py test` | `.venv/bin/python -m pytest` |
+| `python manage.py createsuperuser` | `WEB_USER` dan `WEB_PASSWORD` di `.env` |
+| auto-reload saat file diubah | tidak ada; hentikan dengan Ctrl+C lalu jalankan lagi |
+
+### Menjalankan
+
+```bash
+cd /home/krisna/PROYEK/ont-loop-detector
+
+# dengan perangkat sungguhan (isi .env atau halaman Pengaturan dulu)
+WEB_PASSWORD=rahasia .venv/bin/python -m app.main --host 0.0.0.0 --port 8989
+
+# dengan data contoh, tanpa menghubungi perangkat
+WEB_PASSWORD=rahasia .venv/bin/python -m app.main --replay tests/fixtures --host 0.0.0.0 --port 8989
+
+# sekali periksa di terminal, tanpa web
+.venv/bin/python -m app.main --check
+```
+
+`--host 0.0.0.0` berarti bisa dibuka dari komputer lain di jaringan; `127.0.0.1` hanya dari
+komputer itu sendiri. Tanpa `--host`/`--port`, nilainya diambil dari `WEB_HOST` dan `WEB_PORT`.
+
+### Alur saat aplikasi dijalankan
+
+1. `app/main.py` membaca konfigurasi (`config.load()`), lalu membuat `Store` (SQLite) dan `Monitor`.
+2. `Monitor.start()` menjalankan satu thread latar belakang. Tiap `FAST_INTERVAL_SEC` detik ia
+   mengambil data dari perangkat, memanggil `detector.analyze()`, dan menyimpan hasilnya.
+3. `web.create_app(cfg, monitor, password)` membuat objek FastAPI dan mendaftarkan semua alamat.
+4. `uvicorn.run(...)` menjalankan server web. Uvicorn adalah server-nya; FastAPI hanya kerangkanya.
+
+Endpoint tidak pernah menghubungi perangkat sendiri. Ia hanya membaca hasil terakhir dari
+`monitor.snapshot()` atau dari `monitor.store`, sehingga halaman tetap cepat.
+
+### Membaca `app/web.py`
+
+```python
+@app.get("/api/series")
+def series(hours: float = 6):
+    hours = min(max(hours, 0.25), 24 * 14)
+    return monitor.store.series(int(time.time() - hours * 3600))
+```
+
+- `@app.get("/api/series")` mendaftarkan alamat, seperti satu baris di `urls.py`.
+- Parameter fungsi (`hours`) otomatis diambil dari query string, misalnya `/api/series?hours=3`.
+  Karena tipenya `float`, FastAPI menolak `?hours=abc` dengan kode 422 tanpa kode tambahan.
+- Nilai yang dikembalikan (dict atau list) otomatis dikirim sebagai JSON.
+- Fungsi ditulis dengan `def` biasa, bukan `async def`, sehingga FastAPI menjalankannya di
+  thread terpisah. Ini penting karena tes koneksi bisa memakan waktu beberapa detik.
+
+Login berlaku untuk semua alamat sekaligus lewat `dependencies=[Depends(auth)]` saat `FastAPI(...)`
+dibuat, mirip middleware atau `@login_required` yang dipasang global. Endpoint baru otomatis ikut
+terlindungi.
+
+### Menambah endpoint
+
+Tambahkan fungsi di dalam `create_app()` di `app/web.py`, sebelum `return app`:
+
+```python
+    @app.get("/api/ringkas")
+    def ringkas(minimal: int = 30):
+        """Daftar singkat ONT dengan skor minimal tertentu."""
+        s = monitor.snapshot()
+        return [
+            {"serial": x["serial"], "skor": x["score"], "tingkat": x["level"]}
+            for x in s.get("suspects", [])
+            if x["score"] >= minimal
+        ]
+```
+
+Jalankan ulang aplikasinya, lalu coba:
+
+```bash
+curl -u admin:rahasia 'http://127.0.0.1:8989/api/ringkas?minimal=50'
+# [{"serial":"FHTT0D10A37E","skor":100,"tingkat":"kuat"}]   (mode replay)
+```
+
+Untuk endpoint yang menerima data (POST/PUT), lihat `settings_put` di file yang sama: isi JSON
+diterima lewat `payload: dict = Body(...)`, dan `dependencies=[Depends(_json_only)]` menolak
+kiriman yang bukan JSON.
+
+### Menambah halaman
+
+1. Buat `app/static/nama.html`. Tautkan `static/app.css` supaya tampilannya seragam.
+2. Daftarkan alamatnya di `create_app()`:
+
+   ```python
+       @app.get("/nama")
+       def nama_page():
+           return FileResponse(STATIC / "nama.html", headers={"Cache-Control": "no-cache"})
+   ```
+
+3. Di JavaScript halaman itu, ambil data dengan `fetch("api/...")`. Contoh lengkapnya ada di
+   `app/static/settings.js`.
+4. Tambahkan tautannya di `<nav class="nav">` pada `index.html` dan `settings.html`.
+
+Data dari perangkat pelanggan (nama host, serial) harus selalu lewat fungsi `esc()` sebelum
+dimasukkan ke HTML, seperti di `app/static/app.js`.
+
+### Mengetes endpoint
+
+FastAPI menyediakan `TestClient` yang memanggil aplikasi tanpa menjalankan server:
+
+```python
+from fastapi.testclient import TestClient
+from app.config import Config
+from app.monitor import Monitor
+from app.store import Store
+from app.web import create_app
+
+def test_harus_login():
+    cfg = Config()
+    client = TestClient(create_app(cfg, Monitor(cfg, Store(":memory:")), "pw"))
+    assert client.get("/api/state").status_code == 401
+    assert client.get("/api/state", auth=("admin", "pw")).status_code == 200
+```
+
+Contoh yang lebih lengkap ada di `tests/test_settings.py`. Jalankan semua tes dengan
+`.venv/bin/python -m pytest`.
+
+### Yang sering membingungkan
+
+- **Perubahan kode tidak langsung terlihat.** Tidak ada auto-reload; hentikan dan jalankan lagi.
+  Perubahan pada file di `app/static/` cukup dengan memuat ulang halaman di browser.
+- **Dokumentasi otomatis (`/docs`) dimatikan** di `FastAPI(docs_url=None, ...)` supaya daftar
+  endpoint tidak terbuka. Hapus argumen itu bila ingin melihatnya saat pengembangan.
+- **Tidak ada migrasi.** Kalau menambah kolom di `app/store.py`, database lama di `data/` tidak
+  ikut berubah; hapus file `data/loopdetector.db` atau tambahkan `ALTER TABLE` sendiri.
+- **Satu proses saja.** Penjadwal berjalan di dalam proses web. Jangan menjalankan dengan
+  beberapa worker (`uvicorn --workers 4`), karena tiap worker akan memantau sendiri-sendiri.
+
+Dokumentasi resmi FastAPI: <https://fastapi.tiangolo.com/> (tutorialnya pendek dan bisa diikuti berurutan).
+
 ## Lisensi pihak ketiga
 
 Dashboard menyertakan [uPlot](https://github.com/leeoniya/uPlot) (lisensi MIT) di `app/static/vendor/`.
