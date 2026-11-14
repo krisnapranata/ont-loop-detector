@@ -74,6 +74,10 @@ class Config:
     web_user: str = "admin"
     web_password: str = ""
     db_path: str = str(ROOT / "data" / "loopdetector.db")
+    # Pengaturan yang diubah lewat halaman Pengaturan disimpan di sini dan menimpa nilai .env
+    settings_path: str = str(ROOT / "data" / "settings.json")
+    # Daftar OLT: [{id, name, host, port, transport, user, password, enable_password}]
+    olts: list[dict] = field(default_factory=list)
 
     @property
     def hotspot_networks(self) -> list[ipaddress.IPv4Network]:
@@ -93,7 +97,7 @@ def load(env_file: str | os.PathLike | None = None) -> Config:
     cfg = Config()
     for name, default in list(cfg.__dict__.items()):
         raw = values.get(name.upper())
-        if raw is None or raw == "":
+        if raw is None or raw == "" or name == "olts":
             continue
         if isinstance(default, bool):
             val = raw.lower() in ("1", "true", "yes", "on")
@@ -106,4 +110,7 @@ def load(env_file: str | os.PathLike | None = None) -> Config:
         else:
             val = raw
         setattr(cfg, name, val)
+    from . import settings  # impor di sini untuk menghindari impor melingkar
+
+    settings.overlay(cfg)
     return cfg

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pengaturan – ONT Loop Detector</title>
+<link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 4a8 8 0 1 1-7.4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4 3.5V9h5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg>
+    <span>ONT Loop Detector</span>
+    <nav class="nav"><a href="./">Dashboard</a><a href="pengaturan" aria-current="page">Pengaturan</a></nav>
+  </div>
+  <div class="tools"><button id="btnTheme" class="ghost" type="button" aria-label="Ganti tema terang/gelap">Tema</button></div>
+</header>
+
+<main class="narrow">
+  <h1 class="page-title">Pengaturan</h1>
+  <p class="lead">Alamat dan login perangkat yang dibaca aplikasi. Aplikasi hanya membaca; tidak ada perintah yang mengubah perangkat.
+    Password yang sudah tersimpan tidak ditampilkan. Kosongkan kolom password bila tidak ingin mengubahnya.</p>
+  <p class="notice" id="replayNote" hidden>Aplikasi sedang berjalan dalam mode replay (data contoh). Pengaturan tetap tersimpan, tetapi baru dipakai setelah aplikasi dijalankan tanpa <code>--replay</code>.</p>
+
+  <form id="form" novalidate>
+    <section class="block" data-kind="genieacs">
+      <div class="block-head"><h2>GenieACS</h2><span class="hint">Sumber tabel host tiap ONT</span></div>
+      <div class="fields">
+        <label class="f-host">Host<input name="genieacs.host" placeholder="127.0.0.1" autocomplete="off" spellcheck="false"></label>
+        <label class="f-port">Port<input name="genieacs.port" inputmode="numeric" placeholder="7557"></label>
+        <label>Username<input name="genieacs.user" placeholder="kosong bila tanpa login" autocomplete="off"></label>
+        <label>Password<input name="genieacs.password" type="password" autocomplete="new-password"></label>
+      </div>
+      <div class="test"><button type="button" class="btn-test">Tes koneksi</button><span class="result" role="status"></span></div>
+    </section>
+
+    <section class="block" data-kind="cisco">
+      <div class="block-head"><h2>Switch</h2><span class="hint">Cisco IOS. Hanya perintah <code>show</code></span></div>
+      <div class="fields">
+        <label class="f-host">Host<input name="cisco.host" placeholder="192.168.70.254" autocomplete="off" spellcheck="false"></label>
+        <label class="f-port">Port<input name="cisco.port" inputmode="numeric" placeholder="23"></label>
+        <label class="f-port">Lewat<select name="cisco.transport"><option value="telnet">Telnet</option><option value="ssh">SSH</option></select></label>
+        <label class="f-host">Username<input name="cisco.user" autocomplete="off"></label>
+        <label>Password<input name="cisco.password" type="password" autocomplete="new-password"></label>
+        <label>Password enable<input name="cisco.enable_password" type="password" autocomplete="new-password"></label>
+      </div>
+      <div class="test"><button type="button" class="btn-test">Tes koneksi</button><span class="result" role="status"></span></div>
+    </section>
+
+    <section class="block" data-kind="mikrotik">
+      <div class="block-head"><h2>MikroTik</h2><span class="hint">Lewat SSH. Hanya perintah <code>print</code>, cukup user grup read</span></div>
+      <div class="fields">
+        <label class="f-host">Host<input name="mikrotik.host" placeholder="192.168.100.20" autocomplete="off" spellcheck="false"></label>
+        <label class="f-port">Port SSH<input name="mikrotik.port" inputmode="numeric" placeholder="22"></label>
+        <label>Username<input name="mikrotik.user" autocomplete="off"></label>
+        <label>Password<input name="mikrotik.password" type="password" autocomplete="new-password"></label>
+      </div>
+      <div class="test"><button type="button" class="btn-test">Tes koneksi</button><span class="result" role="status"></span></div>
+    </section>
+
+    <section class="block">
+      <div class="block-head"><h2>OLT</h2><button type="button" id="addOlt" class="btn-add">Tambah OLT</button></div>
+      <p class="hint">Data OLT disimpan dan bisa dites jangkauannya. Saat ini belum dipakai untuk deteksi; itu menunggu dukungan per merek OLT.</p>
+      <div id="olts"></div>
+      <p class="empty" id="noOlt">Belum ada OLT. Pilih "Tambah OLT" untuk mengisi.</p>
+    </section>
+
+    <section class="block">
+      <div class="block-head"><h2>Jaringan</h2><span class="hint">Dipakai untuk mengenali klien hotspot dan trunk OLT</span></div>
+      <div class="fields">
+        <label class="f-wide">Subnet hotspot<input name="network.hotspot_subnets" placeholder="10.8.0.0/20" spellcheck="false"><small>Pisahkan dengan koma bila lebih dari satu</small></label>
+        <label>VLAN hotspot<input name="network.hotspot_vlan" inputmode="numeric"></label>
+        <label>VLAN TR069<input name="network.tr069_vlan" inputmode="numeric"></label>
+        <label class="f-wide">Interface TR069 di router<input name="network.tr069_interface" spellcheck="false"></label>
+        <label class="f-wide">Port switch ke OLT<input name="network.olt_trunks" placeholder="Gi1/0/47, Gi1/0/48" spellcheck="false"><small>Pisahkan dengan koma</small></label>
+      </div>
+    </section>
+
+    <section class="block">
+      <div class="block-head"><h2>Telegram</h2><span class="hint">Peringatan saat loop mulai, tersangka baru, dan loop selesai</span></div>
+      <div class="fields">
+        <label class="f-wide">Token bot<input name="telegram.bot_token" type="password" autocomplete="new-password"></label>
+        <label class="f-wide">Chat ID<input name="telegram.chat_id" placeholder="-1001234567890" spellcheck="false"></label>
+      </div>
+    </section>
+
+    <div class="savebar">
+      <span class="result" id="saveMsg" role="status"></span>
+      <button type="submit" id="btnSave" class="primary">Simpan pengaturan</button>
+    </div>
+  </form>
+</main>
+
+<template id="oltTpl">
+  <fieldset class="olt" data-kind="olt">
+    <div class="fields">
+      <label class="f-wide">Nama<input data-f="name" placeholder="OLT 1" autocomplete="off"></label>
+      <label class="f-host">Host<input data-f="host" placeholder="192.168.203.2" autocomplete="off" spellcheck="false"></label>
+      <label class="f-port">Port<input data-f="port" inputmode="numeric" placeholder="23"></label>
+      <label class="f-port">Lewat<select data-f="transport"><option value="telnet">Telnet</option><option value="ssh">SSH</option></select></label>
+      <label class="f-host">Username<input data-f="user" autocomplete="off"></label>
+      <label>Password<input data-f="password" type="password" autocomplete="new-password"></label>
+      <label>Password enable<input data-f="enable_password" type="password" autocomplete="new-password"></label>
+    </div>
+    <div class="test"><button type="button" class="btn-test">Tes jangkauan</button><span class="result" role="status"></span>
+      <button type="button" class="btn-del">Hapus OLT ini</button></div>
+  </fieldset>
+</template>
+<script src="static/settings.js"></script>
+</body>
+</html>

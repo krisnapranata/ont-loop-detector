@@ -119,6 +119,21 @@ class Monitor:
                 self.notifier.send(N.msg_loop_end(mins))
                 self._incident, self._incident_start, self._known_strong = None, 0.0, set()
 
+    def reconfigure(self) -> None:
+        """Dipanggil setelah pengaturan diubah: aktifkan/nonaktifkan sumber lalu periksa ulang segera."""
+        if self.replay:
+            return
+        for src, on in (
+            (self.acs, bool(self.cfg.genieacs_url)),
+            (self.switch, bool(self.cfg.cisco_host)),
+            (self.router, bool(self.cfg.mikrotik_host)),
+        ):
+            src.enabled = on
+            src.ok, src.error = None, ""
+            if not on:
+                src.data = None
+        self.request_refresh()
+
     # ------------------------------------------------------------ thread
     def start(self) -> None:
         threading.Thread(target=self._loop, name="monitor", daemon=True).start()

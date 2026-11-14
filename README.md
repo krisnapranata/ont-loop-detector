@@ -83,6 +83,21 @@ sudo systemctl daemon-reload && sudo systemctl enable --now ont-loop-detector
 Dashboard ada di `http://<ip-server>:8088/`. Bila `WEB_PASSWORD` kosong, password sementara
 dibuat saat start dan ditulis di log (`journalctl -u ont-loop-detector`).
 
+### Halaman Pengaturan
+
+Alamat dan login GenieACS, switch, MikroTik, dan OLT, serta data jaringan (subnet/VLAN hotspot,
+trunk OLT) dan Telegram bisa diisi dari menu **Pengaturan** di dashboard (`/pengaturan`), tanpa
+mengedit `.env`. Tiap perangkat punya tombol "Tes koneksi".
+
+- Isian disimpan di `data/settings.json` (hak akses 600) dan **menimpa** nilai di `.env`.
+  Perubahan langsung dipakai tanpa restart.
+- Password disimpan apa adanya di file itu, karena aplikasi memerlukannya untuk login ke
+  perangkat. Password tidak pernah dikirim balik ke browser; mengosongkan kolom password berarti
+  tidak mengubahnya.
+- Data OLT saat ini hanya disimpan dan dites jangkauannya (port terbuka). OLT belum dipakai untuk
+  deteksi.
+- Ambang skor, jadwal, dan login dashboard tetap diatur lewat `.env`.
+
 Saran keamanan:
 
 - Buat akun khusus untuk aplikasi ini: user grup `read` di MikroTik dan user tersendiri di switch. Jangan pakai akun admin utama.

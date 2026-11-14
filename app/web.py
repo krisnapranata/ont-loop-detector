@@ -5,11 +5,11 @@ import secrets
 import time
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Body, Depends, FastAPI, HTTPException, Request, status
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from . import __version__
+from . import __version__, settings
 from .config import Config
 from .monitor import Monitor
 
@@ -64,6 +64,39 @@ def create_app(cfg: Config, monitor: Monitor, password: str) -> FastAPI:
     @app.get("/api/device/{device_id}/history")
     def history(device_id: str, hours: float = 24):
         return monitor.store.score_history(device_id, int(time.time() - min(hours, 24 * 14) * 3600))
+
+    @app.get("/pengaturan")
+    def settings_page():
+        return FileResponse(STATIC / "settings.html", headers={"Cache-Control": "no-cache"})
+
+    def _json_only(request: Request) -> None:
+        # mencegah form dari situs lain mengubah pengaturan memakai login browser yang tersimpan
+        if "application/json" not in request.headers.get("content-type", ""):
+            raise HTTPException(415, "Content-Type harus application/json")
+
+    @app.get("/api/settings")
+    def settings_get():
+        v = settings.public_view(cfg)
+        v["replay"] = monitor.replay
+        return JSONResponse(v, headers={"Cache-Control": "no-store"})
+
+    @app.put("/api/settings", dependencies=[Depends(_json_only)])
+    def settings_put(payload: dict = Body(...)):
+        try:
+            settings.save(cfg, payload)
+        except settings.SettingsError as e:
+            return JSONResponse({"ok": False, "errors": e.errors}, status_code=422)
+        monitor.reconfigure()
+        return {"ok": True}
+
+    @app.post("/api/settings/test", dependencies=[Depends(_json_only)])
+    def settings_test(payload: dict = Body(...)):
+        """Tes koneksi memakai isi form saat ini (belum tentu sudah disimpan)."""
+        try:
+            trial = settings.merged(cfg, payload.get("settings") or {})
+        except settings.SettingsError as e:
+            return JSONResponse({"ok": False, "errors": e.errors, "message": "Perbaiki isian yang ditandai dulu."}, status_code=422)
+        return settings.test(trial, str(payload.get("kind") or ""), str(payload.get("olt_id") or ""))
 
     @app.post("/api/refresh")
     def refresh():
