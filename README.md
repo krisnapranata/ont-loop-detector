@@ -112,7 +112,8 @@ app/monitor.py    penjadwal, pencatat kejadian, pemicu notifikasi
 app/store.py      SQLite (deret waktu chart, riwayat kejadian, riwayat skor)
 app/notifier.py   Telegram
 app/web.py        API + dashboard
-app/static/       dashboard (HTML/CSS/JS murni + uPlot, tanpa CDN)
+app/static/       dashboard (HTML/CSS/JS murni + uPlot, tanpa CDN; animasi mati otomatis bila
+                  sistem diatur "kurangi gerakan")
 tests/            tes parser dan tes replay kejadian
 ```
 
@@ -268,4 +269,8 @@ Dokumentasi resmi FastAPI: <https://fastapi.tiangolo.com/> (tutorialnya pendek d
 
 ## Lisensi pihak ketiga
 
-Dashboard menyertakan [uPlot](https://github.com/leeoniya/uPlot) (lisensi MIT) di `app/static/vendor/`.
+Disertakan di `app/static/vendor/` supaya dashboard jalan tanpa internet:
+
+- [uPlot](https://github.com/leeoniya/uPlot) untuk chart, lisensi MIT.
+- Font [Plus Jakarta Sans](https://github.com/tokotype/PlusJakartaSans), lisensi SIL Open Font License 1.1
+  (teks lisensi di `plus-jakarta-sans-OFL.txt`).
