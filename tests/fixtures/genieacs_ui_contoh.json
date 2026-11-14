@@ -1,0 +1,992 @@
+{
+ "filters": {
+  "0": {
+   "label": "Tag",
+   "type": "tag"
+  },
+  "1": {
+   "label": "SN",
+   "parameter": [
+    "PARAM",
+    "DeviceID.SerialNumber"
+   ],
+   "type": "string"
+  },
+  "2": {
+   "label": "Model",
+   "parameter": [
+    "PARAM",
+    "DeviceID.ProductClass"
+   ],
+   "type": "string"
+  },
+  "3": {
+   "label": "PPP",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.pppoeUsername"
+   ],
+   "type": "string"
+  },
+  "4": {
+   "label": "IP TR069",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.IPTR069"
+   ],
+   "type": "string"
+  }
+ },
+ "index": {
+  "0": {
+   "type": "tags",
+   "label": "Tag",
+   "writable": false
+  },
+  "1": {
+   "type": "summon-button",
+   "label": "Aksi",
+   "parameters": {
+    "0": [
+     "PARAM",
+     "VirtualParameters.pppoeUsername"
+    ],
+    "1": [
+     "PARAM",
+     "VirtualParameters.RXPower"
+    ],
+    "2": [
+     "PARAM",
+     "VirtualParameters.IPTR069"
+    ],
+    "3": [
+     "PARAM",
+     "VirtualParameters.getdeviceuptime"
+    ]
+   }
+  },
+  "2": {
+   "type": "container",
+   "label": "Status",
+   "parameter": [
+    "PARAM",
+    "Events.Inform"
+   ],
+   "element": "span.inform",
+   "components": {
+    "0": {
+     "type": "overview-dot",
+     "chart": "online"
+    },
+    "1": {
+     "type": "parameter"
+    }
+   }
+  },
+  "3": {
+   "type": "device-link",
+   "label": "Serial",
+   "parameter": [
+    "PARAM",
+    "DeviceID.SerialNumber"
+   ],
+   "components": {
+    "0": {
+     "type": "parameter"
+    }
+   }
+  },
+  "4": {
+   "label": "Model",
+   "parameter": [
+    "PARAM",
+    "DeviceID.ProductClass"
+   ]
+  },
+  "5": {
+   "label": "PPPoE",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.pppoeUsername"
+   ]
+  },
+  "6": {
+   "type": "container",
+   "label": "IP TR069",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.IPTR069"
+   ],
+   "element": {
+    "tag": "a",
+    "attributes": {
+     "href": [
+      "||",
+      "http://",
+      [
+       "FUNC",
+       "ENCODEURICOMPONENT",
+       [
+        "PARAM",
+        "VirtualParameters.IPTR069"
+       ]
+      ]
+     ],
+     "target": "_blank"
+    }
+   },
+   "components": {
+    "0": {
+     "type": "parameter"
+    }
+   }
+  },
+  "7": {
+   "type": "container",
+   "label": "RX",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.RXPower"
+   ],
+   "components": {
+    "0": {
+     "type": "parameter"
+    },
+    "1": {
+     "type": "overview-dot",
+     "chart": "rx"
+    }
+   }
+  },
+  "8": {
+   "label": "Uptime",
+   "parameter": [
+    "PARAM",
+    "VirtualParameters.getdeviceuptime"
+   ]
+  }
+ },
+ "overview": {
+  "charts": {
+   "online": {
+    "label": "Status",
+    "slices": {
+     "1_online": {
+      "label": "Online",
+      "color": "#3f8fd6",
+      "filter": [
+       ">",
+       [
+        "PARAM",
+        "Events.Inform"
+       ],
+       [
+        "-",
+        [
+         "FUNC",
+         "NOW"
+        ],
+        [
+         "*",
+         5,
+         60000
+        ]
+       ]
+      ]
+     },
+     "2_24h": {
+      "label": "Offline < 24 jam",
+      "color": "#e0a000",
+      "filter": [
+       "AND",
+       [
+        "<",
+        [
+         "PARAM",
+         "Events.Inform"
+        ],
+        [
+         "-",
+         [
+          "FUNC",
+          "NOW"
+         ],
+         [
+          "*",
+          5,
+          60000
+         ]
+        ]
+       ],
+       [
+        ">",
+        [
+         "PARAM",
+         "Events.Inform"
+        ],
+        [
+         "-",
+         [
+          "FUNC",
+          "NOW"
+         ],
+         86400000
+        ]
+       ]
+      ]
+     },
+     "3_lama": {
+      "label": "Offline > 24 jam",
+      "color": "#c43c3c",
+      "filter": [
+       "<",
+       [
+        "PARAM",
+        "Events.Inform"
+       ],
+       [
+        "-",
+        [
+         "FUNC",
+         "NOW"
+        ],
+        86400000
+       ]
+      ]
+     }
+    }
+   },
+   "vendor": {
+    "label": "Merek",
+    "slices": {
+     "1_fh": {
+      "label": "FiberHome",
+      "color": "#2f9e5b",
+      "filter": [
+       "=",
+       [
+        "PARAM",
+        "DeviceID.Manufacturer"
+       ],
+       "FiberHome"
+      ]
+     },
+     "2_hw": {
+      "label": "Huawei",
+      "color": "#3f6fd6",
+      "filter": [
+       "LIKE",
+       [
+        "PARAM",
+        "DeviceID.Manufacturer"
+       ],
+       "Huawei%"
+      ]
+     },
+     "3_zte": {
+      "label": "ZTE",
+      "color": "#d9631e",
+      "filter": [
+       "=",
+       [
+        "PARAM",
+        "DeviceID.Manufacturer"
+       ],
+       "ZTE"
+      ]
+     },
+     "4_lain": {
+      "label": "Lainnya",
+      "color": "#6b7280",
+      "filter": [
+       "AND",
+       [
+        "<>",
+        [
+         "PARAM",
+         "DeviceID.Manufacturer"
+        ],
+        "FiberHome"
+       ],
+       [
+        "NOT LIKE",
+        [
+         "PARAM",
+         "DeviceID.Manufacturer"
+        ],
+        "Huawei%"
+       ],
+       [
+        "<>",
+        [
+         "PARAM",
+         "DeviceID.Manufacturer"
+        ],
+        "ZTE"
+       ]
+      ]
+     }
+    }
+   },
+   "rx": {
+    "label": "Sinyal RX",
+    "slices": {
+     "1_baik": {
+      "label": "Baik",
+      "color": "#2f9e5b",
+      "filter": [
+       "AND",
+       [
+        "IS NOT NULL",
+        [
+         "PARAM",
+         "VirtualParameters.RXPower"
+        ]
+       ],
+       [
+        "<",
+        [
+         "PARAM",
+         "VirtualParameters.RXPower"
+        ],
+        "-24"
+       ]
+      ]
+     },
+     "2_lemah": {
+      "label": "Perlu dicek",
+      "color": "#c43c3c",
+      "filter": [
+       ">=",
+       [
+        "PARAM",
+        "VirtualParameters.RXPower"
+       ],
+       "-24"
+      ]
+     }
+    }
+   }
+  },
+  "groups": {
+   "1_status": {
+    "label": "Ringkasan",
+    "charts": {
+     "0": "online",
+     "1": "vendor",
+     "2": "rx"
+    }
+   }
+  }
+ },
+ "pageSize": 50,
+ "device": {
+  "0": {
+   "type": "ping"
+  },
+  "1": {
+   "type": "parameter-list",
+   "parameters": {
+    "0": {
+     "label": "Inform terakhir",
+     "parameter": [
+      "FUNC",
+      "DATE_STRING",
+      [
+       "PARAM",
+       "Events.Inform"
+      ]
+     ],
+     "element": "span.inform",
+     "components": {
+      "0": {
+       "type": "parameter"
+      },
+      "1": {
+       "type": "overview-dot",
+       "chart": "online"
+      },
+      "2": {
+       "type": "summon-button",
+       "parameters": {
+        "0": [
+         "PARAM",
+         "VirtualParameters.pppoeUsername"
+        ],
+        "1": [
+         "PARAM",
+         "VirtualParameters.RXPower"
+        ],
+        "2": [
+         "PARAM",
+         "VirtualParameters.IPTR069"
+        ],
+        "3": [
+         "PARAM",
+         "VirtualParameters.getdeviceuptime"
+        ],
+        "4": [
+         "PARAM",
+         "InternetGatewayDevice.LANDevice.*.Hosts.Host"
+        ],
+        "5": [
+         "PARAM",
+         "InternetGatewayDevice.LANDevice.*.WLANConfiguration.*.SSID"
+        ]
+       }
+      }
+     }
+    },
+    "1": {
+     "label": "Merek",
+     "parameter": [
+      "PARAM",
+      "DeviceID.Manufacturer"
+     ]
+    },
+    "2": {
+     "label": "Model",
+     "parameter": [
+      "PARAM",
+      "DeviceID.ProductClass"
+     ]
+    },
+    "3": {
+     "label": "Serial",
+     "parameter": [
+      "PARAM",
+      "DeviceID.SerialNumber"
+     ]
+    },
+    "4": {
+     "label": "Firmware",
+     "parameter": [
+      "PARAM",
+      "InternetGatewayDevice.DeviceInfo.SoftwareVersion"
+     ]
+    },
+    "5": {
+     "label": "Sinyal RX",
+     "parameter": [
+      "PARAM",
+      "VirtualParameters.RXPower"
+     ]
+    },
+    "6": {
+     "label": "PPPoE",
+     "parameter": [
+      "PARAM",
+      "VirtualParameters.pppoeUsername"
+     ]
+    },
+    "7": {
+     "label": "Menyala",
+     "parameter": [
+      "PARAM",
+      "VirtualParameters.getdeviceuptime"
+     ]
+    },
+    "8": {
+     "label": "IP TR069",
+     "parameter": [
+      "PARAM",
+      "VirtualParameters.IPTR069"
+     ],
+     "element": {
+      "tag": "a",
+      "attributes": {
+       "href": [
+        "||",
+        "http://",
+        [
+         "FUNC",
+         "ENCODEURICOMPONENT",
+         [
+          "PARAM",
+          "VirtualParameters.IPTR069"
+         ]
+        ]
+       ],
+       "target": "_blank"
+      }
+     },
+     "components": {
+      "0": {
+       "type": "parameter"
+      }
+     }
+    },
+    "9": {
+     "label": "Interval inform",
+     "parameter": [
+      "PARAM",
+      "InternetGatewayDevice.ManagementServer.PeriodicInformInterval"
+     ]
+    }
+   }
+  },
+  "2": {
+   "type": "tags"
+  },
+  "3": {
+   "type": "container",
+   "element": "h3",
+   "components": {
+    "0": "WiFi"
+   }
+  },
+  "4": {
+   "type": "parameter-list",
+   "parameters": {
+    "0": {
+     "label": "WiFi",
+     "element": "span.inform",
+     "components": {
+      "0": {
+       "type": "summon-button",
+       "parameters": {
+        "0": [
+         "PARAM",
+         "InternetGatewayDevice.LANDevice.1.WLANConfiguration"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "5": {
+   "type": "parameter-table",
+   "parameter": [
+    "PARAM",
+    "InternetGatewayDevice.LANDevice.1.WLANConfiguration"
+   ],
+   "childParameters": {
+    "0": {
+     "label": "Aktif",
+     "parameter": [
+      "PARAM",
+      "Enable"
+     ]
+    },
+    "1": {
+     "label": "SSID",
+     "parameter": [
+      "PARAM",
+      "SSID"
+     ]
+    },
+    "2": {
+     "label": "Kanal",
+     "parameter": [
+      "PARAM",
+      "Channel"
+     ]
+    },
+    "3": {
+     "label": "Standar",
+     "parameter": [
+      "PARAM",
+      "Standard"
+     ]
+    }
+   }
+  },
+  "6": {
+   "type": "container",
+   "element": "h3",
+   "components": {
+    "0": "WAN"
+   }
+  },
+  "7": {
+   "type": "container",
+   "filter": [
+    "IS NOT NULL",
+    [
+     "PARAM",
+     "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection.1.Name"
+    ]
+   ],
+   "components": {
+    "0": {
+     "type": "parameter-list",
+     "parameters": {
+      "0": {
+       "label": "WAN PPP 1",
+       "element": "span.inform",
+       "components": {
+        "0": {
+         "type": "summon-button",
+         "parameters": {
+          "0": [
+           "PARAM",
+           "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANPPPConnection"
+          ]
+         }
+        }
+       }
+      }
+     }
+    },
+    "1": {
+     "type": "parameter-table",
+     "parameter": [
+      "PARAM",
+      "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANPPPConnection"
+     ],
+     "childParameters": {
+      "0": {
+       "label": "Aktif",
+       "parameter": [
+        "PARAM",
+        "Enable"
+       ]
+      },
+      "1": {
+       "label": "Nama",
+       "parameter": [
+        "PARAM",
+        "Name"
+       ]
+      },
+      "2": {
+       "label": "Mode",
+       "parameter": [
+        "PARAM",
+        "ConnectionType"
+       ]
+      },
+      "3": {
+       "label": "Layanan",
+       "parameter": [
+        "PARAM",
+        "X_CONTOH_ServiceList"
+       ]
+      },
+      "4": {
+       "label": "VLAN",
+       "parameter": [
+        "PARAM",
+        "X_CONTOH_VLANID"
+       ]
+      },
+      "5": {
+       "label": "Username",
+       "parameter": [
+        "PARAM",
+        "Username"
+       ]
+      },
+      "6": {
+       "label": "Password",
+       "parameter": [
+        "PARAM",
+        "Password"
+       ]
+      },
+      "7": {
+       "label": "IP",
+       "parameter": [
+        "PARAM",
+        "ExternalIPAddress"
+       ]
+      },
+      "8": {
+       "label": "NAT",
+       "parameter": [
+        "PARAM",
+        "NATEnabled"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "8": {
+   "type": "container",
+   "filter": [
+    "IS NOT NULL",
+    [
+     "PARAM",
+     "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANIPConnection.1.Name"
+    ]
+   ],
+   "components": {
+    "0": {
+     "type": "parameter-list",
+     "parameters": {
+      "0": {
+       "label": "WAN IP 2",
+       "element": "span.inform",
+       "components": {
+        "0": {
+         "type": "summon-button",
+         "parameters": {
+          "0": [
+           "PARAM",
+           "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.*.WANIPConnection"
+          ]
+         }
+        }
+       }
+      }
+     }
+    },
+    "1": {
+     "type": "parameter-table",
+     "parameter": [
+      "PARAM",
+      "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANIPConnection"
+     ],
+     "childParameters": {
+      "0": {
+       "label": "Aktif",
+       "parameter": [
+        "PARAM",
+        "Enable"
+       ]
+      },
+      "1": {
+       "label": "Nama",
+       "parameter": [
+        "PARAM",
+        "Name"
+       ]
+      },
+      "2": {
+       "label": "Alamat",
+       "parameter": [
+        "PARAM",
+        "AddressingType"
+       ]
+      },
+      "3": {
+       "label": "Layanan",
+       "parameter": [
+        "PARAM",
+        "X_CONTOH_ServiceList"
+       ]
+      },
+      "4": {
+       "label": "VLAN",
+       "parameter": [
+        "PARAM",
+        "X_CONTOH_VLANID"
+       ]
+      },
+      "5": {
+       "label": "IP",
+       "parameter": [
+        "PARAM",
+        "ExternalIPAddress"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "9": {
+   "type": "parameter-list",
+   "parameters": {
+    "0": {
+     "label": "WAN tersedia",
+     "element": "span.inform",
+     "components": {
+      "0": {
+       "type": "summon-button",
+       "parameters": {
+        "0": [
+         "PARAM",
+         "InternetGatewayDevice.WANDevice.1.WANConnectionDevice"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "10": {
+   "type": "parameter-table",
+   "parameter": [
+    "PARAM",
+    "InternetGatewayDevice.WANDevice.1.WANConnectionDevice"
+   ],
+   "childParameters": {
+    "0": {
+     "label": "PPP",
+     "parameter": [
+      "PARAM",
+      "WANPPPConnection.1.Name"
+     ]
+    },
+    "1": {
+     "label": "IP",
+     "parameter": [
+      "PARAM",
+      "WANIPConnection.1.Name"
+     ]
+    }
+   }
+  },
+  "11": {
+   "type": "container",
+   "element": "h3",
+   "components": {
+    "0": "Perangkat tersambung"
+   }
+  },
+  "12": {
+   "type": "parameter-table",
+   "parameter": [
+    "PARAM",
+    "InternetGatewayDevice.LANDevice.1.Hosts.Host"
+   ],
+   "childParameters": {
+    "0": {
+     "label": "Nama",
+     "parameter": [
+      "PARAM",
+      "HostName"
+     ]
+    },
+    "1": {
+     "label": "IP",
+     "parameter": [
+      "PARAM",
+      "IPAddress"
+     ]
+    },
+    "2": {
+     "label": "MAC",
+     "parameter": [
+      "PARAM",
+      "MACAddress"
+     ]
+    },
+    "3": {
+     "label": "Lewat",
+     "parameter": [
+      "PARAM",
+      "InterfaceType"
+     ]
+    }
+   }
+  },
+  "13": {
+   "type": "container",
+   "element": "h3",
+   "components": {
+    "0": "Faults"
+   }
+  },
+  "14": {
+   "type": "device-faults"
+  },
+  "15": {
+   "type": "container",
+   "element": "h3",
+   "components": {
+    "0": "Semua parameter"
+   }
+  },
+  "16": {
+   "type": "all-parameters"
+  },
+  "17": {
+   "type": "device-actions"
+  }
+ },
+ "admin": {
+  "presets": [
+   {
+    "_id": "bootstrap",
+    "channel": "bootstrap",
+    "weight": 0,
+    "schedule": "",
+    "events": "0 BOOTSTRAP",
+    "precondition": "",
+    "provision": "bootstrap",
+    "provisionArgs": ""
+   },
+   {
+    "_id": "inform",
+    "channel": "inform",
+    "weight": 0,
+    "schedule": "",
+    "events": "",
+    "precondition": "",
+    "provision": "inform",
+    "provisionArgs": ""
+   }
+  ],
+  "provisions": [
+   {
+    "_id": "bootstrap",
+    "script": "// contoh: bersihkan data lama saat ONT pertama kali terdaftar\nclear(\"Device\", Date.now());\nclear(\"InternetGatewayDevice\", Date.now());\n"
+   },
+   {
+    "_id": "inform",
+    "script": "// contoh: atur interval inform 5 menit\ndeclare(\"InternetGatewayDevice.ManagementServer.PeriodicInformInterval\", {value: 1}, {value: 300});\n"
+   }
+  ],
+  "virtualParameters": [
+   {
+    "_id": "RXPower",
+    "script": "// contoh virtual parameter\nlet v = declare(\"InternetGatewayDevice.WANDevice.1.X_CONTOH_GponInterfaceConfig.RXPower\", {value: Date.now()});\nreturn {writable: false, value: [v.value ? v.value[0] : \"\", \"xsd:string\"]};\n"
+   }
+  ],
+  "files": [],
+  "config": [
+   {
+    "_id": "cwmp.deviceOnlineThreshold",
+    "value": "30000"
+   },
+   {
+    "_id": "ui.pageSize",
+    "value": "50"
+   }
+  ],
+  "users": [
+   {
+    "_id": "admin",
+    "roles": "admin"
+   },
+   {
+    "_id": "teknisi",
+    "roles": "teknisi"
+   }
+  ],
+  "permissions": [
+   {
+    "_id": "admin:devices:3",
+    "role": "admin",
+    "resource": "devices",
+    "access": 3,
+    "validate": "true"
+   },
+   {
+    "_id": "teknisi:devices:2",
+    "role": "teknisi",
+    "resource": "devices",
+    "access": 2,
+    "validate": "true"
+   }
+  ],
+  "faults": [
+   {
+    "_id": "000AC2-HG6145D2-FHTTA20F75C3:default",
+    "device": "000AC2-HG6145D2-FHTTA20F75C3",
+    "channel": "default",
+    "timestamp": 1794600000000,
+    "code": "cwmp.9002",
+    "message": "Internal error",
+    "detail": {
+     "faultCode": "9002",
+     "faultString": "Internal error"
+    },
+    "retries": 3
+   }
+  ]
+ }
+}

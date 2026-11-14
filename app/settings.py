@@ -18,10 +18,10 @@ from urllib.parse import urlsplit
 from .config import Config
 
 SAVED_KEYS = [
-    "genieacs_url", "genieacs_user", "genieacs_password",
+    "genieacs_url", "genieacs_user", "genieacs_password", "genieacs_ui_url", "genieacs_ui_user", "genieacs_ui_password",
     "cisco_host", "cisco_port", "cisco_transport", "cisco_user", "cisco_password", "cisco_enable_password",
     "mikrotik_host", "mikrotik_port", "mikrotik_user", "mikrotik_password",
-    "olts",
+    "olts", "acs_locations", "acs_location_param",
     "hotspot_subnets", "hotspot_vlan", "tr069_vlan", "tr069_interface", "olt_trunks",
     "telegram_bot_token", "telegram_chat_id",
 ]
@@ -29,6 +29,8 @@ _HOST = re.compile(r"^[A-Za-z0-9]([A-Za-z0-9.\-:]{0,253})$")
 _NAME = re.compile(r"^[A-Za-z0-9._\-]{1,64}$")  # dipakai di dalam perintah RouterOS: tidak boleh ada kutip/spasi
 _PORTNAME = re.compile(r"^[A-Za-z]{2,}[A-Za-z0-9/.\-]{1,30}$")
 _TEXT = re.compile(r"^[^\x00-\x1f\x7f]{0,128}$")
+_PARAM = re.compile(r"^[A-Za-z_][A-Za-z0-9_\-]*(\.[A-Za-z0-9_\-]+){0,20}$")
+_UI_URL = re.compile(r"^https?://[A-Za-z0-9.\-]+(:\d{1,5})?/?$")
 
 
 class SettingsError(ValueError):
@@ -79,7 +81,9 @@ def public_view(cfg: Config) -> dict:
     _, ah, ap = _split_url(cfg.genieacs_url) if cfg.genieacs_url else ("http", "", 7557)
     return {
         "genieacs": {"host": ah, "port": ap, "user": cfg.genieacs_user,
-                     "password": "", "password_set": bool(cfg.genieacs_password)},
+                     "password": "", "password_set": bool(cfg.genieacs_password),
+                     "ui_url": cfg.genieacs_ui_url, "ui_user": cfg.genieacs_ui_user,
+                     "ui_password": "", "ui_password_set": bool(cfg.genieacs_ui_password)},
         "cisco": {"host": cfg.cisco_host, "port": cfg.cisco_port, "transport": cfg.cisco_transport,
                   "user": cfg.cisco_user, "password": "", "password_set": bool(cfg.cisco_password),
                   "enable_password": "", "enable_password_set": bool(cfg.cisco_enable_password)},
@@ -95,6 +99,9 @@ def public_view(cfg: Config) -> dict:
         "network": {"hotspot_subnets": ", ".join(cfg.hotspot_subnets), "hotspot_vlan": cfg.hotspot_vlan,
                     "tr069_vlan": cfg.tr069_vlan, "tr069_interface": cfg.tr069_interface,
                     "olt_trunks": ", ".join(cfg.olt_trunks)},
+        "locations": {"param": cfg.acs_location_param,
+                      "items": [{"id": x.get("id", ""), "name": x.get("name", ""), "subnets": list(x.get("subnets", []))}
+                                for x in cfg.acs_locations]},
         "telegram": {"bot_token": "", "bot_token_set": bool(cfg.telegram_bot_token), "chat_id": cfg.telegram_chat_id},
     }
 
@@ -165,6 +172,13 @@ def merged(cfg: Config, payload: dict) -> Config:
         new.genieacs_url = f"{scheme}://{'[' + host + ']' if ':' in host else host}:{port}" if host else ""
         new.genieacs_user = v.text("genieacs.user", g.get("user"))
         new.genieacs_password = v.secret("genieacs.password", g.get("password"), cfg.genieacs_password)
+        if "ui_url" in g:
+            ui = str(g.get("ui_url") or "").strip().rstrip("/")
+            if ui and not _UI_URL.match(ui):
+                v.errors["genieacs.ui_url"] = "Tulis seperti http://192.168.1.10:3000"
+            new.genieacs_ui_url = ui
+            new.genieacs_ui_user = v.text("genieacs.ui_user", g.get("ui_user"))
+            new.genieacs_ui_password = v.secret("genieacs.ui_password", g.get("ui_password"), cfg.genieacs_ui_password)
 
     c = payload.get("cisco")
     if isinstance(c, dict):
@@ -208,6 +222,48 @@ def merged(cfg: Config, payload: dict) -> Config:
                 v.errors.setdefault(k + "host", "Host OLT wajib diisi")
             out.append(item)
         new.olts = out
+
+    loc = payload.get("locations")
+    if isinstance(loc, dict):
+        param = str(loc.get("param") or "VirtualParameters.IPTR069").strip()
+        if not _PARAM.match(param):
+            v.errors["locations.param"] = "Tulis nama parameter GenieACS, mis. VirtualParameters.IPTR069"
+        new.acs_location_param = param
+        items = loc.get("items") if isinstance(loc.get("items"), list) else []
+        if len(items) > 50:
+            v.errors["locations"] = "Maksimal 50 lokasi"
+        old_ids = {x.get("id") for x in cfg.acs_locations}
+        out, names = [], set()
+        for i, it in enumerate(items[:50]):
+            if not isinstance(it, dict):
+                continue
+            k = f"locations.{i}."
+            name = str(it.get("name") or "").strip()
+            if not name or len(name) > 40 or not _TEXT.match(name):
+                v.errors[k + "name"] = "Nama lokasi wajib diisi, maksimal 40 karakter"
+            elif name.lower() in names:
+                v.errors[k + "name"] = "Nama lokasi sudah dipakai"
+            names.add(name.lower())
+            raw = it.get("subnets")
+            raw = raw if isinstance(raw, list) else str(raw or "").replace("\n", ",").split(",")
+            subnets = []
+            for sn in (str(x).strip() for x in raw):
+                if not sn:
+                    continue
+                try:
+                    net = ipaddress.ip_network(sn, strict=False)
+                    if net.version != 4 or net.prefixlen < 8:
+                        raise ValueError
+                    subnets.append(str(net))
+                except ValueError:
+                    v.errors[k + "subnets"] = f"{sn[:40]} bukan jaringan IPv4 yang sah (contoh 172.16.0.0/20, prefix minimal /8)"
+            if not subnets:
+                v.errors.setdefault(k + "subnets", "Isi minimal satu alamat jaringan, mis. 172.16.0.0/20")
+            if len(subnets) > 16:
+                v.errors[k + "subnets"] = "Maksimal 16 jaringan per lokasi"
+            lid = str(it.get("id") or "")
+            out.append({"id": lid if lid in old_ids and lid else secrets.token_hex(4), "name": name, "subnets": subnets[:16]})
+        new.acs_locations = out
 
     n = payload.get("network")
     if isinstance(n, dict):
@@ -281,6 +337,19 @@ def test(cfg: Config, kind: str, olt_id: str = "") -> dict:
 
             n = len(genieacs.fetch(cfg, timeout=30))
             return {"ok": True, "message": f"Tersambung. {n} ONT terbaca."}
+        if kind == "genieacs_ui":
+            if not cfg.genieacs_ui_url:
+                return {"ok": False, "message": "Alamat UI GenieACS belum diisi."}
+            from .manage import ManageError
+            from .manage.genieacs_ui import UiClient
+
+            try:
+                c = UiClient(cfg)
+                n = c.count("devices", "true")
+                v = c.client_config().get("version", "")
+            except ManageError as e:
+                return {"ok": False, "message": str(e)}
+            return {"ok": True, "message": f"Login berhasil{' (GenieACS ' + v + ')' if v else ''}. {n} perangkat terbaca."}
         if kind == "cisco":
             if not cfg.cisco_host:
                 return {"ok": False, "message": "Host switch belum diisi."}

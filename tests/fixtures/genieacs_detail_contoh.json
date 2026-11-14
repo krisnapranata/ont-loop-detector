@@ -1,0 +1,276 @@
+{
+ "InternetGatewayDevice": {
+  "DeviceInfo": {
+   "SoftwareVersion": {
+    "_value": "RP2740-CONTOH",
+    "_type": "xsd:string",
+    "_writable": false
+   },
+   "HardwareVersion": {
+    "_value": "WKE2.094.277A01",
+    "_type": "xsd:string",
+    "_writable": false
+   },
+   "_object": true,
+   "_writable": false
+  },
+  "ManagementServer": {
+   "PeriodicInformInterval": {
+    "_value": 300,
+    "_type": "xsd:unsignedInt",
+    "_writable": true
+   },
+   "PeriodicInformEnable": {
+    "_value": true,
+    "_type": "xsd:boolean",
+    "_writable": true
+   },
+   "_object": true,
+   "_writable": false
+  },
+  "LANDevice": {
+   "1": {
+    "WLANConfiguration": {
+     "1": {
+      "Enable": {
+       "_value": true,
+       "_type": "xsd:boolean",
+       "_writable": true
+      },
+      "SSID": {
+       "_value": "WiFi-Contoh",
+       "_type": "xsd:string",
+       "_writable": true
+      },
+      "Channel": {
+       "_value": 6,
+       "_type": "xsd:unsignedInt",
+       "_writable": true
+      },
+      "Standard": {
+       "_value": "b,g,n",
+       "_type": "xsd:string",
+       "_writable": false
+      },
+      "PreSharedKey": {
+       "1": {
+        "KeyPassphrase": {
+         "_value": "",
+         "_type": "xsd:string",
+         "_writable": true
+        }
+       }
+      },
+      "_object": true,
+      "_writable": false
+     },
+     "5": {
+      "Enable": {
+       "_value": false,
+       "_type": "xsd:boolean",
+       "_writable": true
+      },
+      "SSID": {
+       "_value": "WiFi-Contoh-5G",
+       "_type": "xsd:string",
+       "_writable": true
+      },
+      "Channel": {
+       "_value": 149,
+       "_type": "xsd:unsignedInt",
+       "_writable": true
+      },
+      "Standard": {
+       "_value": "a,n,ac",
+       "_type": "xsd:string",
+       "_writable": false
+      },
+      "KeyPassphrase": {
+       "_value": "",
+       "_type": "xsd:string",
+       "_writable": true
+      },
+      "_object": true,
+      "_writable": false
+     },
+     "_object": true,
+     "_writable": false
+    }
+   }
+  },
+  "WANDevice": {
+   "1": {
+    "WANConnectionDevice": {
+     "1": {
+      "WANPPPConnection": {
+       "1": {
+        "Name": {
+         "_value": "1_INTERNET_R_VID_10",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "Username": {
+         "_value": "pelanggan-contoh",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "ConnectionStatus": {
+         "_value": "Connected",
+         "_type": "xsd:string",
+         "_writable": false
+        },
+        "ExternalIPAddress": {
+         "_value": "100.64.10.21",
+         "_type": "xsd:string",
+         "_writable": false
+        },
+        "_object": true,
+        "_writable": true,
+        "Enable": {
+         "_value": true,
+         "_type": "xsd:boolean",
+         "_writable": true
+        },
+        "Password": {
+         "_value": "",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "ConnectionType": {
+         "_value": "PPPoE_Routed",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "NATEnabled": {
+         "_value": true,
+         "_type": "xsd:boolean",
+         "_writable": true
+        },
+        "VLANEnable": {
+         "_value": true,
+         "_type": "xsd:boolean",
+         "_writable": true
+        },
+        "VLANID": {
+         "_value": 10,
+         "_type": "xsd:unsignedInt",
+         "_writable": true
+        },
+        "X_FH_ServiceList": {
+         "_value": "INTERNET",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "X_FH_LanInterface": {
+         "_value": "InternetGatewayDevice.LANDevice.1.LANEthernetInterfaceConfig.1",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "MaxMRUSize": {
+         "_value": 1492,
+         "_type": "xsd:unsignedInt",
+         "_writable": true
+        }
+       },
+       "_object": true,
+       "_writable": true
+      },
+      "_object": true,
+      "_writable": true,
+      "WANIPConnection": {
+       "_object": true,
+       "_writable": true
+      }
+     },
+     "2": {
+      "_object": true,
+      "_writable": true,
+      "WANPPPConnection": {
+       "_object": true,
+       "_writable": true
+      },
+      "WANIPConnection": {
+       "_object": true,
+       "_writable": true,
+       "1": {
+        "_object": true,
+        "_writable": true,
+        "Enable": {
+         "_value": true,
+         "_type": "xsd:boolean",
+         "_writable": true
+        },
+        "Name": {
+         "_value": "2_TR069_R_VID_100",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "AddressingType": {
+         "_value": "DHCP",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "ConnectionType": {
+         "_value": "IP_Routed",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "ConnectionStatus": {
+         "_value": "Connected",
+         "_type": "xsd:string",
+         "_writable": false
+        },
+        "ExternalIPAddress": {
+         "_value": "172.16.0.200",
+         "_type": "xsd:string",
+         "_writable": false
+        },
+        "VLANEnable": {
+         "_value": true,
+         "_type": "xsd:boolean",
+         "_writable": true
+        },
+        "VLANID": {
+         "_value": 100,
+         "_type": "xsd:unsignedInt",
+         "_writable": true
+        },
+        "X_FH_ServiceList": {
+         "_value": "TR069",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "X_FH_LanInterface": {
+         "_value": "",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "SubnetMask": {
+         "_value": "255.255.255.0",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "DefaultGateway": {
+         "_value": "172.16.0.1",
+         "_type": "xsd:string",
+         "_writable": true
+        },
+        "DNSServers": {
+         "_value": "8.8.8.8",
+         "_type": "xsd:string",
+         "_writable": true
+        }
+       }
+      }
+     },
+     "_object": true,
+     "_writable": true
+    },
+    "_object": true,
+    "_writable": false
+   },
+   "_object": true,
+   "_writable": false
+  }
+ }
+}

@@ -9,8 +9,9 @@ FTTH + hotspot, dengan menggabungkan tiga sumber data:
 | **Switch Cisco** | log `MACFLAP_NOTIF` dan tabel MAC |
 | **Router MikroTik** | status loop-protect tiap VLAN, log loop-protect, ARP TR069, jumlah user hotspot |
 
-Aplikasi ini **hanya membaca dan melapor**. Ia tidak mengubah ONT, switch, maupun router.
-Di switch hanya perintah `show` yang dijalankan, di router hanya `print`, di GenieACS hanya `GET`.
+Pemantauan dan deteksi **hanya membaca**: di switch hanya perintah `show`, di router hanya `print`,
+di GenieACS hanya `GET`. Perangkat baru diubah bila Anda sendiri menekan tombol aksi di menu
+**GenieACS**, **Switch**, atau **MikroTik** (lihat [Menu kelola perangkat](#menu-kelola-perangkat)).
 
 ## Cara kerja
 
@@ -94,13 +95,15 @@ sudo systemctl daemon-reload && sudo systemctl enable --now ont-loop-detector
 ```
 
 Dashboard ada di `http://<ip-server>:8088/` (user `admin`). Bila `WEB_PASSWORD` kosong, password
-sementara dibuat saat start dan ditulis di log. Setelah itu isi alamat perangkat di halaman Pengaturan.
+sementara dibuat saat start dan ditulis di log. Setelah itu isi alamat perangkat di tab **Koneksi**
+pada menu GenieACS, Switch, dan MikroTik.
 
 ### Halaman Pengaturan
 
-Alamat dan login GenieACS, switch, MikroTik, dan OLT, serta data jaringan (subnet/VLAN hotspot,
-trunk OLT) dan Telegram bisa diisi dari menu **Pengaturan** di dashboard (`/pengaturan`), tanpa
-mengedit `.env`. Tiap perangkat punya tombol "Tes koneksi".
+Data OLT, data jaringan (subnet/VLAN hotspot, trunk OLT), dan Telegram diisi dari menu
+**Pengaturan** (`/pengaturan`). Alamat dan login GenieACS, switch, dan MikroTik diisi di tab
+**Koneksi** pada menu masing-masing. Semuanya tanpa mengedit `.env`, dan tiap perangkat punya tombol
+"Tes koneksi".
 
 - Isian disimpan di `data/settings.json` (hak akses 600) dan **menimpa** nilai di `.env`.
   Perubahan langsung dipakai tanpa restart.
@@ -114,12 +117,47 @@ mengedit `.env`. Tiap perangkat punya tombol "Tes koneksi".
 Saran keamanan:
 
 - Buat akun khusus untuk aplikasi ini: user grup `read` di MikroTik dan user tersendiri di switch. Jangan pakai akun admin utama.
+  Bila Anda ingin memakai tombol aksi di menu MikroTik, user itu perlu hak `write`; tanpa itu menu tetap bisa dipakai untuk melihat.
+- Siapa pun yang bisa login ke dashboard bisa me-reboot atau me-reset ONT dan mematikan port. Jaga password dashboard seperti password perangkat.
 - Dashboard memakai HTTP + basic auth. Jangan dibuka ke internet; akses lewat jaringan manajemen atau VPN.
+
+### Menu kelola perangkat
+
+| Menu | Yang bisa dilihat | Yang bisa diubah |
+|---|---|---|
+| **GenieACS** (`/genieacs`) | meniru UI GenieACS: Overview (chart), Devices (filter, kolom, Summon per baris, unduh CSV), halaman perangkat (tata letak dari config GenieACS Anda, ping, tag, faults, semua parameter), Faults, Admin (presets, provisions, virtual parameters, files, config, users, permissions) | Summon, ubah nilai parameter (✎), tambah/hapus instance objek termasuk WAN PPP/IP, ambil ulang objek, reboot, reset pabrik, push file, hapus perangkat, tag/untag (juga massal), hapus fault, dan CRUD semua halaman Admin |
+| **Switch** (`/switch`) | status port, log, running-config (rahasia disembunyikan) | nyalakan/matikan port, deskripsi port, simpan ke startup-config |
+| **MikroTik** (`/mikrotik`) | interface, VLAN dan status loop-protect, user hotspot aktif, log, export config tanpa rahasia | aktifkan/nonaktifkan interface, atur loop-protect VLAN |
+
+- Menu GenieACS bicara ke **API UI GenieACS** (biasanya port 3000) memakai akun yang diisi di tab
+  Koneksi, jadi izin akun itu di GenieACS tetap berlaku. Pemantauan loop tetap memakai NBI (7557).
+- **Tab lokasi** di Devices mengelompokkan perangkat menurut jaringan IP WAN/TR069, misalnya
+  "Kampung Wifi" = `172.16.0.0/20`. Atur lewat tombol ⚙ di samping tab: nama tab dan satu atau lebih
+  alamat jaringan per lokasi. Tersimpan di `data/settings.json` (bukan di GenieACS), dan tab "Lainnya"
+  berisi perangkat yang IP-nya di luar semua lokasi. Parameter IP-nya bisa diganti di bagian Lanjutan.
+- Tata letak daftar dan halaman perangkat diambil dari Config `ui.*` GenieACS Anda sendiri: filter,
+  kolom, blok WAN per merek ONT, tombol Summon, dan chart Overview. Mengubah Config di GenieACS (atau
+  di Admin › Config di sini) langsung mengubah tampilan di sini.
+- Perubahan ONT dikirim sebagai tugas GenieACS dengan *connection request*, persis seperti UI GenieACS.
+  Bila ONT tidak menjawab, tugas menunggu ONT terhubung lagi dan pesannya ditampilkan.
+- Instance yang memuat koneksi manajemen TR069 (nama atau Service List berisi TR069, atau IP-nya sama
+  dengan IP TR069) tidak bisa dihapus dari sini, karena ONT akan lepas dari GenieACS dan tidak bisa
+  dikelola dari jauh lagi.
+- Tidak ada kotak perintah bebas. Server menyusun sendiri setiap perintah, dan hanya meneruskan rute
+  API GenieACS yang ada di daftar putih.
+- Aksi yang memutus layanan meminta konfirmasi. Reset pabrik dan menghapus perangkat dari GenieACS
+  meminta Anda mengetik kata konfirmasi; menghapus instance cukup satu klik konfirmasi; mematikan trunk
+  OLT meminta nama port.
+- Di mode replay semua aksi ditolak, dan tata letak GenieACS memakai contoh (`tests/fixtures/genieacs_ui_contoh.json`).
+- Aksi ke perangkat sungguhan belum diuji otomatis. Coba dulu di ONT atau port yang tidak dipakai pelanggan.
 
 ## Struktur
 
 ```
-app/collectors/   pengambil data + parser (genieacs, cisco, mikrotik)
+app/collectors/   pengambil data + parser (genieacs, cisco, mikrotik), hanya membaca
+app/manage/       kelola perangkat dari menu GenieACS/Switch/MikroTik (satu-satunya yang mengubah perangkat);
+                  genieacs_ui.py = klien API UI GenieACS, acs_expr.py = pengurai ekspresi GenieACS
+app/web_manage.py rute halaman dan API menu kelola
 app/detector.py   mesin skor (fungsi murni)
 app/monitor.py    penjadwal, pencatat kejadian, pemicu notifikasi
 app/store.py      SQLite (deret waktu chart, riwayat kejadian, riwayat skor)
@@ -181,8 +219,9 @@ komputer itu sendiri. Tanpa `--host`/`--port`, nilainya diambil dari `WEB_HOST` 
 3. `web.create_app(cfg, monitor, password)` membuat objek FastAPI dan mendaftarkan semua alamat.
 4. `uvicorn.run(...)` menjalankan server web. Uvicorn adalah server-nya; FastAPI hanya kerangkanya.
 
-Endpoint tidak pernah menghubungi perangkat sendiri. Ia hanya membaca hasil terakhir dari
-`monitor.snapshot()` atau dari `monitor.store`, sehingga halaman tetap cepat.
+Endpoint dashboard tidak pernah menghubungi perangkat sendiri. Ia hanya membaca hasil terakhir dari
+`monitor.snapshot()` atau dari `monitor.store`, sehingga halaman tetap cepat. Pengecualiannya rute menu
+kelola di `app/web_manage.py`, yang memang menghubungi perangkat saat halaman atau tombolnya dipakai.
 
 ### Membaca `app/web.py`
 

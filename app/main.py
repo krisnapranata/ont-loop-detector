@@ -84,6 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.replay:
         store = Store(":memory:")
         mon = Monitor(cfg, store, replay=True)
+        mon.replay_dir = args.replay
         mon.acs.data, mon.switch.data, mon.router.data = replay_mod.load(args.replay)
         for s in (mon.acs, mon.switch, mon.router):
             s.enabled, s.ok, s.last_ok = True, True, time.time()

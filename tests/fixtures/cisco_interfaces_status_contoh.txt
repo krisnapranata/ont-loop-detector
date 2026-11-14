@@ -1,0 +1,13 @@
+show interfaces status
+
+Port      Name               Status       Vlan       Duplex  Speed Type
+Gi1/0/1   UPLINK-ROUTER      connected    trunk      a-full a-1000 10/100/1000BaseTX
+Gi1/0/2   SERVER-ACS         connected    100        a-full a-1000 10/100/1000BaseTX
+Gi1/0/3                      notconnect   1            auto   auto 10/100/1000BaseTX
+Gi1/0/4   CADANGAN           disabled     1            auto   auto 10/100/1000BaseTX
+Gi1/0/5   AP-KANTOR          err-disabled 200          auto   auto 10/100/1000BaseTX
+Gi1/0/47  OLT-1              connected    trunk      a-full a-1000 10/100/1000BaseTX
+Gi1/0/48  OLT-2              connected    trunk      a-full a-1000 10/100/1000BaseTX
+Te1/0/1                      notconnect   1            full    10G Not Present
+Po1       LAG-CORE           connected    trunk      a-full a-1000 
+SW-CONTOH#

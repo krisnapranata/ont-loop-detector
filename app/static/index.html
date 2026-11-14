@@ -12,7 +12,7 @@
   <div class="brand">
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 4a8 8 0 1 1-7.4 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4 3.5V9h5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg>
     <span>ONT Loop Detector</span>
-    <nav class="nav"><a href="./" aria-current="page">Dashboard</a><a href="pengaturan">Pengaturan</a></nav>
+    <nav class="nav" aria-label="Menu utama"><a href="./" aria-current="page">Dashboard</a><a href="genieacs">GenieACS</a><a href="switch">Switch</a><a href="mikrotik">MikroTik</a><a href="pengaturan">Pengaturan</a></nav>
     <span class="replay" id="replayTag" hidden>Mode replay, data contoh</span>
   </div>
   <div class="tools">
@@ -38,7 +38,7 @@
 
   <section class="block reveal" style="--i:2">
     <div class="block-head">
-      <h2>Perkembangan</h2>
+      <h2 style="--tc:var(--f-blue)"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg></span>Perkembangan</h2>
       <div class="range" role="group" aria-label="Rentang waktu">
         <button type="button" data-h="1">1 jam</button>
         <button type="button" data-h="3" aria-pressed="true">3 jam</button>
@@ -46,28 +46,27 @@
         <button type="button" data-h="24">24 jam</button>
       </div>
     </div>
-    <p class="hint">Area merah muda menandai waktu loop terjadi.</p>
+    <p class="hint">Area berarsir merah menandai waktu loop terjadi. Angka besar di kanan adalah nilai terbaru.</p>
     <div class="charts" id="charts">
-      <div class="chart"><h3>MAC berpindah port per pemeriksaan</h3><div id="c1"></div></div>
-      <div class="chart"><h3>User hotspot aktif</h3><div id="c2"></div></div>
-      <div class="chart"><h3>ONT yang ditandai
-        <span class="legend"><i class="sw sw-kuat"></i>tersangka kuat <i class="sw sw-risk"></i>berisiko</span></h3><div id="c3"></div></div>
+      <div class="chart" style="--tc:var(--f-orange)"><div class="chart-head"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span><div class="ct"><h3>MAC berpindah port</h3><small id="sub1">per pemeriksaan</small></div><b class="now" id="now1">–</b></div><div id="c1"></div></div>
+      <div class="chart" style="--tc:var(--f-aqua)"><div class="chart-head"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5a15 15 0 0 1 20 0"/><path d="M5 12a10.5 10.5 0 0 1 14 0"/><path d="M8.5 15.5a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></span><div class="ct"><h3>User hotspot aktif</h3><small id="sub2">jumlah login hotspot</small></div><b class="now" id="now2">–</b></div><div id="c2"></div></div>
+      <div class="chart" style="--tc:var(--f-red)"><div class="chart-head"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".6"/></svg></span><div class="ct"><h3>ONT yang ditandai</h3><small class="legend"><i class="sw sw-kuat"></i>tersangka kuat <i class="sw sw-risk"></i>berisiko</small></div><b class="now" id="now3">–</b></div><div id="c3"></div></div>
     </div>
     <details class="tableview"><summary>Lihat angka chart sebagai tabel</summary><div id="seriesTable"></div></details>
   </section>
 
   <div class="cols reveal" style="--i:3">
     <section class="block">
-      <div class="block-head"><h2>ONT yang perlu diperiksa</h2><span class="hint" id="coverage"></span></div>
+      <div class="block-head"><h2 style="--tc:var(--f-red)"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".6"/></svg></span>ONT yang perlu diperiksa</h2><span class="hint" id="coverage"></span></div>
       <div id="suspects" class="suspects"></div>
     </section>
     <aside>
       <section class="block">
-        <div class="block-head"><h2>MAC yang berpindah-pindah</h2></div>
+        <div class="block-head"><h2 style="--tc:var(--f-orange)"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg></span>MAC yang berpindah-pindah</h2></div>
         <div id="flapping"></div>
       </section>
       <section class="block">
-        <div class="block-head"><h2>Riwayat kejadian</h2></div>
+        <div class="block-head"><h2 style="--tc:var(--f-slate)"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>Riwayat kejadian</h2></div>
         <div id="incidents"></div>
       </section>
     </aside>

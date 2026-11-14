@@ -9,7 +9,7 @@ from fastapi import Body, Depends, FastAPI, HTTPException, Request, status
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from . import __version__, settings
+from . import __version__, settings, web_manage
 from .config import Config
 from .monitor import Monitor
 
@@ -102,5 +102,7 @@ def create_app(cfg: Config, monitor: Monitor, password: str) -> FastAPI:
     def refresh():
         monitor.request_refresh()
         return {"ok": True}
+
+    web_manage.register(app, cfg, monitor, _json_only)
 
     return app

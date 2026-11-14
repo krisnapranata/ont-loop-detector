@@ -102,41 +102,101 @@
     return out;
   };
 
+  // ---- ilustrasi perangkat (SVG buatan sendiri, tanpa logo atau gambar dari luar)
+  const blink = (i, slow) => `class="lk" style="animation-delay:${((i * 0.37) % 1.3).toFixed(2)}s${slow ? ";animation-duration:2.4s" : ""}"`;
+  const label = (cx, y, title, sub, hot) =>
+    `<text class="dev-t${hot ? " warn" : ""}" x="${cx}" y="${y}" text-anchor="middle">${esc(title)}</text>` +
+    `<text class="sub" x="${cx}" y="${y + 13}" text-anchor="middle">${esc(sub)}</text>`;
+  // server rak 1U (router MikroTik x86, mis. Dell PowerEdge)
+  function serverArt(x, cy) {
+    const y = cy - 15;
+    let bays = "";
+    for (let i = 0; i < 4; i++) bays += `<rect x="${x + 50 + i * 9}" y="${y + 9}" width="7" height="12" rx="1" fill="#2c323a" stroke="#4a525d" stroke-width=".6"/><circle cx="${x + 53.5 + i * 9}" cy="${y + 19}" r=".9" fill="#3ddc84" ${blink(i)}/>`;
+    let grill = "";
+    for (let i = 0; i < 7; i++) grill += `<path d="M${x + 13 + i * 4.4} ${y + 8} l2 4 l-2 4 l2 4" stroke="#5b6470" stroke-width=".8" fill="none"/>`;
+    return `<g class="dev">
+      <rect x="${x}" y="${y}" width="92" height="30" rx="3.5" fill="url(#gSrv)" stroke="#0b0e12"/>
+      <rect x="${x + 1.5}" y="${y + 2}" width="5" height="26" rx="1.2" fill="#3a414b"/><rect x="${x + 85.5}" y="${y + 2}" width="5" height="26" rx="1.2" fill="#3a414b"/>
+      ${grill}<circle cx="${x + 46}" cy="${y + 15}" r="3.2" fill="#9aa7b6" stroke="#d7dde4" stroke-width=".7"/>
+      ${bays}<circle cx="${x + 9.5}" cy="${y + 6}" r="1.4" fill="#4aa3ff" class="pwr"/>
+    </g>`;
+  }
+  // switch rak 1U (Cisco Catalyst): dua baris port RJ45 dengan lampu link
+  function switchArt(x, cy) {
+    const y = cy - 15;
+    let ports = "";
+    for (let r = 0; r < 2; r++) for (let i = 0; i < 8; i++) {
+      const px = x + 22 + i * 7.6, py = y + 7 + r * 10;
+      ports += `<rect x="${px}" y="${py}" width="6" height="6.5" rx=".8" fill="#1d232a"/><rect x="${px + .6}" y="${py - 2}" width="1.6" height="1.2" fill="#41e07b" ${blink(r * 8 + i)}/>`;
+    }
+    return `<g class="dev">
+      <rect x="${x}" y="${y}" width="92" height="30" rx="3.5" fill="url(#gSw)" stroke="#55677a"/>
+      <rect x="${x + 4}" y="${y + 5}" width="14" height="20" rx="2" fill="#20303f"/><circle cx="${x + 8}" cy="${y + 10}" r="1.3" fill="#41e07b"/><circle cx="${x + 13}" cy="${y + 10}" r="1.3" fill="#ffb020" ${blink(3, true)}/>
+      ${ports}<rect x="${x + 84}" y="${y + 8}" width="5" height="6" rx=".8" fill="#1d232a"/><rect x="${x + 84}" y="${y + 17}" width="5" height="6" rx=".8" fill="#1d232a"/>
+    </g>`;
+  }
+  // sasis OLT dengan port PON
+  function oltArt(x, cy, i0) {
+    const y = cy - 16;
+    let pon = "";
+    for (let i = 0; i < 8; i++) pon += `<rect x="${x + 24 + i * 7.4}" y="${y + 17}" width="5.4" height="8" rx="1" fill="#1a2027"/><circle cx="${x + 26.7 + i * 7.4}" cy="${y + 12}" r="1.2" fill="#41e07b" ${blink(i0 * 3 + i)}/>`;
+    return `<g class="dev">
+      <rect x="${x}" y="${y}" width="92" height="32" rx="3.5" fill="url(#gOlt)" stroke="#0d1116"/>
+      <rect x="${x + 4}" y="${y + 5}" width="16" height="9" rx="1.5" fill="#0e3a2a" stroke="#1d5c43" stroke-width=".6"/>
+      <text x="${x + 12}" y="${y + 11.6}" text-anchor="middle" class="lcd">PON</text>
+      ${pon}<rect x="${x + 85}" y="${y + 6}" width="4" height="20" rx="1" fill="#2b323b"/>
+    </g>`;
+  }
+  // ONT pelanggan: kotak putih dua antena
+  function ontArt(x, cy, hot) {
+    const y = cy - 13;
+    return `<g class="dev${hot ? " ont-hot" : ""}">
+      <path d="M${x + 9} ${y + 2} l-3 -12 M${x + 49} ${y + 2} l3 -12" stroke="#c9ced6" stroke-width="3" stroke-linecap="round"/>
+      <rect x="${x}" y="${y}" width="58" height="26" rx="6" fill="url(#gOnt)" stroke="${hot ? "var(--critical)" : "#c4cbd4"}" stroke-width="${hot ? 2 : 1}"/>
+      <circle cx="${x + 12}" cy="${y + 13}" r="1.6" fill="#36c46a"/><circle cx="${x + 19}" cy="${y + 13}" r="1.6" fill="#36c46a"/>
+      <circle cx="${x + 26}" cy="${y + 13}" r="1.6" fill="${hot ? "#ff3b3b" : "#cfd5dc"}" ${hot ? 'class="lk fast"' : ""}/>
+      <circle cx="${x + 33}" cy="${y + 13}" r="1.6" fill="#36c46a" ${blink(2)}/><rect x="${x + 41}" y="${y + 9}" width="11" height="8" rx="2" fill="#e3e7ec"/>
+    </g>`;
+  }
+  const DEFS = `<defs>
+    <linearGradient id="gSrv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b424c"/><stop offset=".5" stop-color="#1c2128"/><stop offset="1" stop-color="#121519"/></linearGradient>
+    <linearGradient id="gSw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dfe7ee"/><stop offset=".55" stop-color="#b9c7d4"/><stop offset="1" stop-color="#94a6b7"/></linearGradient>
+    <linearGradient id="gOlt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a525d"/><stop offset="1" stop-color="#1d2228"/></linearGradient>
+    <linearGradient id="gOnt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e2e7ed"/></linearGradient>
+  </defs>`;
+
   function pathSvg({ list, a: active, n, t: topSerial, tk: topTrunk }) {
     list = list.length ? list : ["Trunk OLT"];
-    const H = Math.max(160, list.length * 68 + 30), mid = H / 2;
-    const ys = list.map((_, i) => (list.length === 1 ? mid : 36 + (i * (H - 72)) / (list.length - 1)));
-    let wires = "", pk = "", boxes = "";
-    const w0 = `M78 ${mid} L118 ${mid}`;
+    const H = Math.max(180, list.length * 86 + 26), mid = H / 2 - 8;
+    const ys = list.map((_, i) => (list.length === 1 ? mid : 34 + (i * (H - 92)) / (list.length - 1)));
+    let wires = "", pk = "", devs = "";
+    const w0 = `M96 ${mid} L130 ${mid}`;
     wires += `<path class="wire" d="${w0}"/>`;
     pk += packets(w0, 1, 1.4, false);
-    boxes += box(4, mid - 21, 74, 42, "Router", "MikroTik") + box(118, mid - 21, 74, 42, "Switch", "Cisco");
+    devs += serverArt(4, mid) + label(50, mid + 30, "MikroTik", "Router x86") + switchArt(130, mid) + label(176, mid + 30, "Cisco", "Switch");
     list.forEach((t, i) => {
-      const d = `M192 ${mid} C215 ${mid} 215 ${ys[i]} 238 ${ys[i]}`;
+      const d = `M222 ${mid} C246 ${mid} 246 ${ys[i]} 270 ${ys[i]}`;
       wires += `<path class="wire" d="${d}"/>`;
       pk += packets(d, 1, 1.8 + i * 0.35, false);
-      boxes += box(238, ys[i] - 19, 104, 38, t, "ke OLT");
+      devs += oltArt(270, ys[i], i) + label(316, ys[i] + 31, t, "ke OLT");
     });
     const ti = topSerial ? list.indexOf(topTrunk) : -1;
     if (ti >= 0) {
-      wires += `<path class="wire" d="M342 ${ys[ti]} L372 ${ys[ti]}"/>`;
-      if (!calm) boxes += `<rect class="halo" x="372" y="${ys[ti] - 19}" width="128" height="38" rx="8"/>`;
-      boxes += box(372, ys[ti] - 19, 128, 38, topSerial, "ONT tersangka", true);
+      wires += `<path class="wire" d="M362 ${ys[ti]} L402 ${ys[ti]}"/>`;
+      if (!calm) devs += `<rect class="halo" x="398" y="${ys[ti] - 17}" width="66" height="34" rx="9"/>`;
+      devs += ontArt(402, ys[ti], true) + label(431, ys[ti] + 28, topSerial, "ONT tersangka", true);
     }
     let loop = "";
     if (active && list.length > 1) {
-      const a = ys[0], b = ys[list.length - 1], x0 = ti >= 0 ? 504 : 346;
-      const d = `M${ti === 0 ? x0 : 346} ${a} C${x0 + 44} ${a} ${x0 + 44} ${b} ${ti === list.length - 1 ? x0 : 346} ${b}`;
+      const a = ys[0], b = ys[list.length - 1], x0 = ti >= 0 ? 462 : 364;
+      const d = `M${ti === 0 ? x0 : 364} ${a} C${x0 + 52} ${a} ${x0 + 52} ${b} ${ti === list.length - 1 ? x0 : 364} ${b}`;
       loop = `<path class="loop" d="${d}"/>` + packets(d, 3, 2.2, true);
-      loop += `<text class="warn" x="${x0 > 400 ? 474 : x0 + 40}" y="${mid + 4}" text-anchor="${x0 > 400 ? "end" : "start"}">${n} MAC bolak-balik</text>`;
+      // teks di sisi dalam lengkung, sedikit di bawah label ONT agar tidak bertabrakan
+      loop += `<text class="warn" x="${x0 - 2}" y="${(a + b) / 2 + 20}" text-anchor="end">${n} MAC bolak-balik</text>`;
     }
-    const label = active ? "Frame berputar antar-trunk lewat perangkat di sisi pelanggan" : "Tidak ada frame yang berputar";
-    return `<svg viewBox="0 0 548 ${H}" role="img" aria-label="${esc(label)}">${wires}${pk}${loop}${boxes}</svg><figcaption class="hint">${esc(label)}</figcaption>`;
+    const cap = active ? "Frame berputar antar-trunk lewat perangkat di sisi pelanggan" : "Tidak ada frame yang berputar";
+    return `<svg viewBox="0 0 540 ${H}" role="img" aria-label="${esc(cap)}">${DEFS}${wires}${pk}${loop}${devs}</svg><figcaption class="hint">${esc(cap)}</figcaption>`;
   }
-  const box = (x, y, w, h, title, sub, hot) =>
-    `<rect class="node${hot ? " hot" : ""}" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>` +
-    `<text x="${x + w / 2}" y="${y + h / 2 - 1}" text-anchor="middle">${esc(title)}</text>` +
-    `<text class="sub" x="${x + w / 2}" y="${y + h / 2 + 12}" text-anchor="middle">${esc(sub)}</text>`;
 
   // ------------------------------------------------------------------ angka ringkas
   function countUp(el, to) {
@@ -278,6 +338,19 @@
     return out;
   }
   const COLS = [["flap_events"], ["hotspot_active"], ["strong", "risk"]];
+  // seri yang digambar: kolom pertama diulang sebagai lapisan pendar di bawah garis utama
+  const DRAWN = [["flap_events", "flap_events"], ["hotspot_active", "hotspot_active"], ["strong", "strong", "risk"]];
+  const CH_H = 180;
+  const lastOf = (arr) => { for (let i = arr.length - 1; i >= 0; i--) if (arr[i] != null) return [i, arr[i]]; return [-1, null]; };
+  function chartNumbers(d) {
+    const set = (id, v) => { const el = $(id); if (el && el.textContent !== String(v)) { el.textContent = v; el.classList.remove("tick"); void el.offsetWidth; el.classList.add("tick"); } };
+    const max = (a) => Math.max(0, ...a.filter((x) => x != null));
+    set("now1", lastOf(d.flap_events)[1] ?? "–");
+    set("now2", lastOf(d.hotspot_active)[1] ?? "–");
+    set("now3", `${lastOf(d.strong)[1] ?? 0} / ${lastOf(d.risk)[1] ?? 0}`);
+    $("sub1").textContent = `tertinggi ${max(d.flap_events)} pada rentang ini`;
+    $("sub2").textContent = `tertinggi ${max(d.hotspot_active)} pada rentang ini`;
+  }
   const NAMES = [["pindah port"], ["user"], ["tersangka kuat", "berisiko"]];
   function drawCharts() {
     const d = series;
@@ -292,23 +365,35 @@
     const key = hours + "|" + (document.documentElement.dataset.theme || "auto");
     if (charts.length && key === chartKey) {
       // rentang dan tema sama: cukup ganti datanya, tanpa membangun ulang (tidak berkedip)
-      charts.forEach((u, i) => u.setData([d.ts, ...COLS[i].map((c) => d[c])]));
+      charts.forEach((u, i) => u.setData([d.ts, ...DRAWN[i].map((c) => d[c])]));
     } else {
       charts.forEach((c) => c.destroy());
       charts = []; chartKey = key;
       ["c1", "c2", "c3"].forEach((id) => ($(id).innerHTML = ""));
-      const muted = css("--muted"), line = css("--line"), band = css("--band"), accent = css("--accent"), tip = $("tip");
-      const grad = (u) => {
+      const muted = css("--muted"), line = css("--line"), tip = $("tip");
+      const orange = css("--f-orange"), aqua = css("--f-aqua"), red = css("--f-red"), yellow = css("--f-yellow");
+      const grad = (color) => (u) => {
         const g = u.ctx.createLinearGradient(0, u.bbox.top, 0, u.bbox.top + u.bbox.height);
-        g.addColorStop(0, accent + "55");
-        g.addColorStop(1, accent + "00");
+        g.addColorStop(0, color + "66");
+        g.addColorStop(.6, color + "1a");
+        g.addColorStop(1, color + "00");
         return g;
       };
+      // pita waktu loop: arsiran merah, lebih jelas daripada blok warna polos
+      const hatch = (() => {
+        const c = document.createElement("canvas"), dpr = devicePixelRatio || 1;
+        c.width = c.height = 10 * dpr;
+        const x = c.getContext("2d");
+        x.fillStyle = red + "14"; x.fillRect(0, 0, c.width, c.height);
+        x.strokeStyle = red + "40"; x.lineWidth = 2 * dpr;
+        x.beginPath(); x.moveTo(0, c.height); x.lineTo(c.width, 0); x.stroke();
+        return c;
+      })();
       const mk = (id, idx, sers) => {
         const el = $(id);
         const u = new uPlot({
-          width: el.clientWidth, height: 138, legend: { show: false },
-          cursor: { sync: { key: "loop" }, drag: { x: false, y: false }, points: { size: 9 } },
+          width: el.clientWidth, height: CH_H, legend: { show: false },
+          cursor: { sync: { key: "loop" }, drag: { x: false, y: false }, points: { size: 11, width: 3, fill: css("--surface") } },
           scales: { x: { time: true }, y: { range: (u, mn, mx) => [0, Math.max(4, Math.ceil(mx * 1.15))] } },
           axes: [
             { stroke: muted, grid: { show: false }, ticks: { stroke: line, width: 1 }, values: (u, sp) => sp.map(fmtTime), font: "12px 'Plus Jakarta Sans', system-ui", size: 28 },
@@ -318,12 +403,27 @@
           hooks: {
             drawClear: [(u) => {
               u.ctx.save();
-              u.ctx.fillStyle = band;
+              u.ctx.fillStyle = u.ctx.createPattern(hatch, "repeat");
               bandList.forEach(([a, b]) => {
                 const x0 = Math.max(u.bbox.left, u.valToPos(a, "x", true)), x1 = Math.min(u.bbox.left + u.bbox.width, u.valToPos(b, "x", true));
                 if (x1 > x0) u.ctx.fillRect(x0, u.bbox.top, x1 - x0, u.bbox.height);
               });
               u.ctx.restore();
+            }],
+            // titik terakhir: cincin berwarna di nilai terbaru tiap garis utama
+            draw: [(u) => {
+              const ctx = u.ctx, dpr = devicePixelRatio || 1;
+              u.series.forEach((s, si) => {
+                if (!si || !s.show || s._glow) return;
+                const [i, v] = lastOf(u.data[si]);
+                if (i < 0) return;
+                const x = u.valToPos(u.data[0][i], "x", true), y = u.valToPos(v, "y", true);
+                ctx.save();
+                ctx.beginPath(); ctx.arc(x, y, 7 * dpr, 0, 2 * Math.PI); ctx.fillStyle = s._stroke + "33"; ctx.fill();
+                ctx.beginPath(); ctx.arc(x, y, 3.5 * dpr, 0, 2 * Math.PI); ctx.fillStyle = s._stroke; ctx.fill();
+                ctx.lineWidth = 2 * dpr; ctx.strokeStyle = css("--surface"); ctx.stroke();
+                ctx.restore();
+              });
             }],
             setCursor: [(u) => {
               const i = u.cursor.idx, dd = series;
@@ -337,17 +437,18 @@
               tip.style.top = r.top + Math.max(0, u.cursor.top - 34) + "px";
             }],
           },
-        }, [d.ts, ...COLS[idx].map((c) => d[c])], el);
+        }, [d.ts, ...DRAWN[idx].map((c) => d[c])], el);
         u.over.addEventListener("mouseleave", () => (tip.hidden = true));
         charts.push(u);
       };
-      mk("c1", 0, [{ stroke: accent, width: 2, fill: grad, points: { show: false } }]);
-      mk("c2", 1, [{ stroke: accent, width: 2, fill: grad, points: { show: false }, spanGaps: true }]);
-      mk("c3", 2, [
-        { stroke: css("--critical"), width: 2, points: { show: false }, paths: uPlot.paths.stepped({ align: 1 }) },
-        { stroke: css("--warning"), width: 2, dash: [6, 4], points: { show: false }, paths: uPlot.paths.stepped({ align: 1 }) },
-      ]);
+      const spline = uPlot.paths.spline ? uPlot.paths.spline() : undefined, step = uPlot.paths.stepped({ align: 1 });
+      const glow = (color, paths) => ({ stroke: color + "30", width: 9, points: { show: false }, paths, spanGaps: true, _stroke: color, _glow: true });
+      const main = (color, paths, extra = {}) => ({ stroke: color, _stroke: color, width: 2.6, points: { show: false }, paths, spanGaps: true, ...extra });
+      mk("c1", 0, [glow(orange, spline), main(orange, spline, { fill: grad(orange) })]);
+      mk("c2", 1, [glow(aqua, spline), main(aqua, spline, { fill: grad(aqua) })]);
+      mk("c3", 2, [glow(red, step), main(red, step, { fill: grad(red) }), main(yellow, step, { dash: [6, 4] })]);
     }
+    chartNumbers(d);
     const rows = d.ts.map((t, i) => i).slice(-40).reverse();
     $("seriesTable").innerHTML = `<div class="scroll"><table><thead><tr><th>Waktu</th><th class="num">Pindah port</th><th class="num">User hotspot</th><th class="num">Tersangka kuat</th><th class="num">Berisiko</th><th>Loop</th></tr></thead><tbody>${rows.map((i) =>
       `<tr><td>${fmtTime(d.ts[i])}</td><td class="num">${d.flap_events[i] ?? "–"}</td><td class="num">${d.hotspot_active[i] ?? "–"}</td><td class="num">${d.strong[i] ?? "–"}</td><td class="num">${d.risk[i] ?? "–"}</td><td>${d.loop_active[i] ? "ya" : "tidak"}</td></tr>`).join("")}</tbody></table></div>`;
@@ -365,7 +466,7 @@
   let rz;
   addEventListener("resize", () => {
     clearTimeout(rz);
-    rz = setTimeout(() => charts.forEach((u) => u.setSize({ width: u.root.parentElement.clientWidth, height: 138 })), 120);
+    rz = setTimeout(() => charts.forEach((u) => u.setSize({ width: u.root.parentElement.clientWidth, height: CH_H })), 120);
   });
 
   // ------------------------------------------------------------------ putaran

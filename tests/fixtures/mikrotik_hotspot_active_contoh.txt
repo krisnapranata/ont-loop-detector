@@ -1,0 +1,7 @@
+Flags: R - radius, B - blocked
+ 0    server=hotspot1 user="voucher-a1b2" address=10.8.0.21
+      mac-address=8E:58:EA:3B:AF:11 login-by="http-chap" uptime=1h12m5s
+      idle-time=3s session-time-left=22h47m55s
+ 1    server=hotspot1 user="voucher-c3d4" address=10.8.1.77
+      mac-address=D2:37:75:67:77:38 login-by="http-chap" uptime=12m40s
+      idle-time=41s session-time-left=5h47m20s

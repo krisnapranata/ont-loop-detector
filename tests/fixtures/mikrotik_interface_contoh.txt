@@ -1,0 +1,14 @@
+Flags: D - dynamic, X - disabled, R - running, S - slave
+ 0  R  name="ether11-INTERNET" default-name="ether11" type="ether" mtu=1500
+       actual-mtu=1500 l2mtu=1580 mac-address=14:02:EC:BD:79:AF
+       last-link-up-time=nov/10/2026 08:11:02 link-downs=0
+ 1  R  name="ether13-MANAGEMENT" default-name="ether13" type="ether" mtu=1500
+       actual-mtu=1500 l2mtu=1580 mac-address=14:02:EC:00:00:0D
+       last-link-up-time=nov/10/2026 08:11:02 link-downs=0
+ 2  X  name="ether14-CADANGAN" default-name="ether14" type="ether" mtu=1500
+       actual-mtu=1500 l2mtu=1580 mac-address=14:02:EC:00:00:0E link-downs=0
+ 3  R  name="vlan100-MNG-TR069" type="vlan" mtu=1500 actual-mtu=1500
+       mac-address=14:02:EC:00:00:0D last-link-up-time=nov/10/2026 08:11:05
+ 4     name="vlan200-HOTSPOT" type="vlan" mtu=1500 actual-mtu=1500
+       mac-address=14:02:EC:BD:79:AF last-link-down-time=nov/14/2026 10:29:58
+ 5 DR  name="pppoe-contoh 01" type="pppoe-in" mtu=1480 actual-mtu=1480

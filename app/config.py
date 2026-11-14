@@ -35,6 +35,10 @@ class Config:
     genieacs_url: str = "http://127.0.0.1:7557"
     genieacs_user: str = ""
     genieacs_password: str = ""
+    # UI GenieACS (biasanya port 3000) untuk menu GenieACS: daftar perangkat, summon, admin
+    genieacs_ui_url: str = ""
+    genieacs_ui_user: str = ""
+    genieacs_ui_password: str = ""
     # Switch Cisco
     cisco_host: str = ""
     cisco_port: int = 23
@@ -78,6 +82,9 @@ class Config:
     settings_path: str = str(ROOT / "data" / "settings.json")
     # Daftar OLT: [{id, name, host, port, transport, user, password, enable_password}]
     olts: list[dict] = field(default_factory=list)
+    # Tab lokasi di menu GenieACS › Devices: [{id, name, subnets: ["172.16.0.0/20", ...]}]
+    acs_locations: list[dict] = field(default_factory=list)
+    acs_location_param: str = "VirtualParameters.IPTR069"
 
     @property
     def hotspot_networks(self) -> list[ipaddress.IPv4Network]:
@@ -97,7 +104,7 @@ def load(env_file: str | os.PathLike | None = None) -> Config:
     cfg = Config()
     for name, default in list(cfg.__dict__.items()):
         raw = values.get(name.upper())
-        if raw is None or raw == "" or name == "olts":
+        if raw is None or raw == "" or name in ("olts", "acs_locations"):
             continue
         if isinstance(default, bool):
             val = raw.lower() in ("1", "true", "yes", "on")

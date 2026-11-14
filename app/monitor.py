@@ -47,6 +47,7 @@ class Source:
 class Monitor:
     def __init__(self, cfg: Config, store: Store, notifier: N.Notifier | None = None, replay: bool = False):
         self.cfg, self.store, self.replay = cfg, store, replay
+        self.replay_dir = ""  # folder fixture; dipakai tab kelola perangkat di mode replay
         self.notifier = notifier or N.Notifier(cfg)
         self.acs = Source("genieacs", "GenieACS", bool(cfg.genieacs_url), lambda: genieacs.fetch(cfg))
         self.switch = Source("cisco", "Switch Cisco", bool(cfg.cisco_host), lambda: cisco.fetch(cfg))

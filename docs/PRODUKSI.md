@@ -64,7 +64,7 @@ chmod 600 .env
 ```
 
 Yang perlu diisi di sini cukup login dashboard. Alamat perangkat lebih mudah diisi nanti lewat
-halaman Pengaturan.
+dashboard.
 
 ```
 WEB_PASSWORD=<password dashboard yang kuat>
@@ -251,16 +251,18 @@ lalu buka `http://127.0.0.1:8088/`. Cara ini tidak mengubah apa pun di router.
 **Jangan membuka dashboard ke internet.** Dashboard memakai HTTP dengan login biasa, bukan HTTPS,
 sehingga password bisa disadap bila lewat jaringan publik.
 
-### Mengisi halaman Pengaturan
+### Mengisi koneksi perangkat dan Pengaturan
 
-Buka menu **Pengaturan**, isi tiap perangkat, tekan **Tes koneksi**, lalu **Simpan pengaturan**.
-Perubahan langsung berlaku tanpa restart.
+Buka menu **GenieACS**, **Switch**, dan **MikroTik** satu per satu, pilih tab **Koneksi**, isi, tekan
+**Tes koneksi**, lalu **Simpan koneksi**. Sisanya diisi di menu **Pengaturan**. Perubahan langsung
+berlaku tanpa restart.
 
-| Bagian | Yang diisi |
+| Tempat | Yang diisi |
 |---|---|
-| GenieACS | host `127.0.0.1`, port `7557`; username/password hanya bila API-nya diberi login |
-| Switch | IP manajemen switch, port `23` (Telnet) atau `22` (SSH), username, password, password enable |
-| MikroTik | IP router, port SSH router, username, password |
+| GenieACS → Koneksi → UI GenieACS | alamat UI, mis. `http://127.0.0.1:3000`, beserta username dan password login UI GenieACS. Dipakai semua menu GenieACS |
+| GenieACS → Koneksi → NBI GenieACS | host `127.0.0.1`, port `7557`; username/password hanya bila NBI diberi login. Dipakai pemantauan loop |
+| Switch → Koneksi | IP manajemen switch, port `23` (Telnet) atau `22` (SSH), username, password, password enable |
+| MikroTik → Koneksi | IP router, port SSH router, username, password |
 | OLT | boleh lebih dari satu; saat ini hanya disimpan dan dites jangkauannya |
 | Jaringan | subnet hotspot, VLAN hotspot, VLAN TR069, nama interface TR069 di router, port switch ke OLT |
 | Telegram | token bot dan chat ID (opsional) |
@@ -275,6 +277,10 @@ Sebaiknya jangan memakai akun admin utama perangkat.
 # MikroTik: user yang hanya bisa membaca
 /user add name=ontloop group=read password=<password>
 ```
+
+User grup `read` cukup untuk deteksi dan untuk melihat isi menu MikroTik. Tombol aksi di menu itu
+(aktifkan/nonaktifkan interface, atur loop-protect) baru berfungsi bila user-nya punya hak `write`.
+Begitu pula di switch: tombol aksi port memerlukan password enable.
 
 Di switch, buat username tersendiri untuk aplikasi. Aplikasi menjalankan `show clock`, `show logging`,
 dan `show mac address-table`, dan masuk ke mode enable bila password enable diisi.

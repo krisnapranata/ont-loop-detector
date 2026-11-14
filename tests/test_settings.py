@@ -118,7 +118,8 @@ def test_api_save_roundtrip_and_reconfigure(tmp_path):
     assert mon.switch.enabled and mon.router.enabled and mon.acs.enabled
     got = cl.get("/api/settings", auth=auth)
     assert "rahasia" not in got.text
-    assert got.json()["genieacs"] == {"host": "192.168.100.253", "port": 7557, "user": "", "password": "", "password_set": False}
+    assert got.json()["genieacs"] == {"host": "192.168.100.253", "port": 7557, "user": "", "password": "", "password_set": False,
+                                      "ui_url": "", "ui_user": "", "ui_password": "", "ui_password_set": False}
     bad = cl.put("/api/settings", auth=auth, json={"mikrotik": {"host": "x", "port": 0}})
     assert bad.status_code == 422 and "mikrotik.port" in bad.json()["errors"]
 
@@ -132,3 +133,34 @@ def test_connection_test_reports_failure_without_saving(tmp_path):
     assert c.genieacs_url == ""  # tes tidak menyimpan
     r = cl.post("/api/settings/test", auth=("admin", "pw"), json={"kind": "cisco", "settings": {}})
     assert r.json() == {"ok": False, "message": "Host switch belum diisi."}
+
+
+def test_genieacs_ui_account_saved_validated_and_hidden(tmp_path):
+    c = cfg_at(tmp_path)
+    ui = {**FULL["genieacs"], "ui_url": "http://10.0.0.5:3000/", "ui_user": "admin", "ui_password": "rahasia-ui"}
+    settings.save(c, {"genieacs": ui})
+    assert (c.genieacs_ui_url, c.genieacs_ui_user, c.genieacs_ui_password) == ("http://10.0.0.5:3000", "admin", "rahasia-ui")
+    assert "rahasia-ui" not in json.dumps(settings.public_view(c))
+    settings.save(c, {"genieacs": {**ui, "ui_password": ""}})
+    assert c.genieacs_ui_password == "rahasia-ui"  # dikosongkan = tidak diubah
+    for bad in ("javascript:alert(1)", "http://10.0.0.5:3000/api/x", "ftp://a"):
+        with pytest.raises(settings.SettingsError):
+            settings.merged(c, {"genieacs": {**ui, "ui_url": bad}})
+
+
+def test_acs_locations_saved_with_stable_ids_and_validated(tmp_path):
+    c = cfg_at(tmp_path)
+    items = [{"name": "Kampung Wifi", "subnets": "172.16.0.0/20"},
+             {"name": "Trigara.Net", "subnets": ["172.16.16.5/20", " "]}]
+    settings.save(c, {"locations": {"param": "VirtualParameters.IPTR069", "items": items}})
+    assert [x["subnets"] for x in c.acs_locations] == [["172.16.0.0/20"], ["172.16.16.0/20"]]
+    first = c.acs_locations[0]["id"]
+    settings.save(c, {"locations": {"items": [{**c.acs_locations[0], "name": "Kampung WiFi"}]}})
+    assert c.acs_locations[0]["id"] == first and c.acs_locations[0]["name"] == "Kampung WiFi"
+    assert settings.public_view(c)["locations"]["items"][0]["subnets"] == ["172.16.0.0/20"]
+    for bad in ({"items": [{"name": "", "subnets": "10.0.0.0/8"}]}, {"items": [{"name": "A", "subnets": "bukan-ip"}]},
+                {"items": [{"name": "A", "subnets": "10.0.0.0/4"}]}, {"items": [{"name": "A", "subnets": ""}]},
+                {"items": [{"name": "A", "subnets": "10.0.0.0/8"}, {"name": "a", "subnets": "11.0.0.0/8"}]},
+                {"param": "x; drop", "items": []}):
+        with pytest.raises(settings.SettingsError):
+            settings.merged(c, {"locations": bad})

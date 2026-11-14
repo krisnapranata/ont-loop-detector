@@ -31,10 +31,12 @@
         } else el.value = v ?? "";
       }
     }
-    $("olts").innerHTML = "";
-    (s.olts || []).forEach(addOlt);
-    syncEmpty();
-    $("replayNote").hidden = !s.replay;
+    if ($("olts")) {
+      $("olts").innerHTML = "";
+      (s.olts || []).forEach(addOlt);
+      syncEmpty();
+    }
+    if ($("replayNote")) $("replayNote").hidden = !s.replay;
   }
 
   function addOlt(o) {
@@ -50,15 +52,18 @@
     return node;
   }
   const syncEmpty = () => ($("noOlt").hidden = $("olts").children.length > 0);
-  $("addOlt").onclick = () => { addOlt(null).querySelector("input").focus(); syncEmpty(); markDirty(); };
+  if ($("addOlt")) $("addOlt").onclick = () => { addOlt(null).querySelector("input").focus(); syncEmpty(); markDirty(); };
 
   function collect() {
-    const out = { genieacs: {}, cisco: {}, mikrotik: {}, network: {}, telegram: {}, olts: [] };
+    // hanya bagian yang ada di halaman ini yang dikirim; bagian lain tidak disentuh server
+    const out = {};
     for (const el of form.elements) {
       if (!el.name || !el.name.includes(".")) continue;
       const [sec, k] = el.name.split(".");
-      out[sec][k] = el.value.trim();
+      (out[sec] ||= {})[k] = el.value.trim();
     }
+    if (!$("olts")) return out;
+    out.olts = [];
     $("olts").querySelectorAll(".olt").forEach((node) => {
       const o = { id: node.dataset.id };
       node.querySelectorAll("[data-f]").forEach((el) => (o[el.dataset.f] = el.value.trim()));
